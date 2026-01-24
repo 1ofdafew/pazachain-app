@@ -12,39 +12,54 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Wallet,
+  Wallet as WalletIcon,
   Copy,
   ExternalLink,
   LogOut,
   Check,
   ChevronDown,
 } from "lucide-react";
+import { useWallet, WalletType } from "@/contexts/wallet-context";
+import { Wallet } from "thirdweb/wallets";
+import { WalletSelector } from "./wallet-selector";
+import { useAccountBalances } from "@/contexts/acount-balances-context";
 
 interface WalletHeaderProps {
+  isConnecting: boolean;
   isConnected: boolean;
-  onConnect: () => void;
+  onConnect: (type: WalletType) => Promise<Wallet | null | undefined>;
   onDisconnect: () => void;
   address?: string;
   pusdBalance?: string;
 }
 
-export function WalletHeader({
-  isConnected,
-  onConnect,
-  onDisconnect,
-  address,
-  pusdBalance = "0.00",
-}: WalletHeaderProps) {
+export function WalletHeader() {
+  // {
+  // isConnecting,
+  // isConnected,
+  // onConnect,
+  // onDisconnect,
+  // address = "",
+  // pusdBalance = "0.00",
+  // }: WalletHeaderProps
   const [copied, setCopied] = useState(false);
+  const {
+    address,
+    connectWallet,
+    disconnectWallet,
+    isConnected,
+    isConnecting,
+  } = useWallet();
+  const { pusdBalance } = useAccountBalances();
 
   const displayAddress = address
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
     : "";
   const formattedBalance = Number.parseFloat(pusdBalance).toLocaleString(
     undefined,
-    { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
   );
-  const explorerUrl = address ? `https://bscscan.com/address/${address}` : "";
+  const explorerUrl = address ? `https://basescan.org/address/${address}` : "";
 
   const copyAddress = async () => {
     if (!address) return;
@@ -79,9 +94,8 @@ export function WalletHeader({
             <DropdownMenuTrigger asChild>
               <Button
                 size="sm"
-                className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-              >
-                <Wallet className="w-4 h-4" />
+                className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+                <WalletIcon className="w-4 h-4" />
                 {displayAddress}
                 <ChevronDown className="w-3 h-3 opacity-70" />
               </Button>
@@ -130,24 +144,27 @@ export function WalletHeader({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={onDisconnect}
+                onClick={disconnectWallet}
                 variant="destructive"
-                className="gap-3 py-2.5"
-              >
+                className="gap-3 py-2.5">
                 <LogOut className="w-4 h-4" />
                 <span>Disconnect</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Button
-            onClick={onConnect}
-            size="sm"
-            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-          >
-            <Wallet className="w-4 h-4" />
-            Connect
-          </Button>
+          <WalletSelector
+            onSelectWallet={connectWallet}
+            isConnecting={isConnecting}
+            buttonClassName="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+          />
+          // <Button
+          //   onClick={onConnect}
+          //   size="sm"
+          //   className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+          //   <WalletIcon className="w-4 h-4" />
+          //   Connect
+          // </Button>
         )}
       </div>
     </header>

@@ -66,7 +66,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
             auth: {
               options: ["apple", "google", "passkey"],
               passkeyDomain: window.location.hostname,
-              mode: "popup",
+              // mode: "popup",
             }, // define available options
             executionMode: {
               mode: "EIP7702", // modern AA if available

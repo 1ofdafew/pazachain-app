@@ -16,6 +16,10 @@ import {
 import dynamic from "next/dynamic";
 import { Html5Qrcode } from "html5-qrcode";
 import { toast } from "sonner";
+import { useWallet, WalletType } from "@/contexts/wallet-context";
+import { WalletSelector } from "./wallet-selector";
+import { Wallet } from "thirdweb/wallets";
+import { useAccountBalances } from "@/contexts/acount-balances-context";
 
 const QRCode = dynamic(
   () => import("react-qrcode-logo").then((mod) => mod.QRCode),
@@ -24,7 +28,7 @@ const QRCode = dynamic(
     loading: () => (
       <div className="w-40 h-40 bg-muted animate-pulse rounded-lg" />
     ),
-  },
+  }
 );
 
 // Generate mock transaction hash
@@ -64,16 +68,14 @@ function TransactionResult({
         href={explorerUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 text-sm text-primary hover:underline"
-      >
+        className="flex items-center gap-2 text-sm text-primary hover:underline">
         <span>View on Explorer: {shortHash}</span>
         <ExternalLink className="w-3.5 h-3.5" />
       </a>
       <Button
         variant="outline"
         className="w-full h-10 mt-2 border-primary/30 text-primary hover:bg-primary/10 bg-transparent"
-        onClick={onDismiss}
-      >
+        onClick={onDismiss}>
         Done
       </Button>
     </div>
@@ -83,18 +85,13 @@ function TransactionResult({
 interface SwapCardProps {
   activeTab: "buy" | "send" | "receive";
   onTabChange: (tab: "buy" | "send" | "receive") => void;
-  isConnected: boolean;
-  onConnect: () => void;
-  pusdBalance?: string;
 }
 
-export function SwapCard({
-  activeTab,
-  onTabChange,
-  isConnected,
-  onConnect,
-  pusdBalance = "0.00",
-}: SwapCardProps) {
+export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
+  const { isConnected, isConnecting, connectWallet, address } = useWallet();
+  // const { pusdBalance } = useAccountBalances();
+  const pusdBalance = "1,000.00";
+
   // Parse balance (remove commas for numeric comparison)
   const numericBalance = Number.parseFloat(pusdBalance.replace(/,/g, ""));
   const [payAmount, setPayAmount] = useState("");
@@ -115,6 +112,29 @@ export function SwapCard({
     }
   };
 
+  const handleBuy = () => {
+    if (!payAmount || Number(payAmount) <= 0) {
+      toast.error("Please enter an amount");
+      return;
+    }
+    if (Number(payAmount) > numericBalance) {
+      toast("Insufficient PUSD balance", {
+        description: `You have ${pusdBalance} PUSD but tried to spend ${payAmount} PUSD`,
+        style: {
+          background: "#451a03",
+          border: "1px solid #b45309",
+          color: "#fbbf24",
+        },
+      });
+      return;
+    }
+    const txHash = generateTxHash();
+    setBuyTxResult({
+      message: `Buying ${receiveAmount} PAZA for ${payAmount} PUSD`,
+      txHash,
+    });
+  };
+
   return (
     <Card className="bg-card border-border overflow-hidden">
       {/* Tab Navigation */}
@@ -127,8 +147,7 @@ export function SwapCard({
               activeTab === tab
                 ? "text-primary border-b-2 border-primary bg-primary/5"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
+            }`}>
             {tab}
           </button>
         ))}
@@ -146,8 +165,7 @@ export function SwapCard({
                   <span className="text-sm text-muted-foreground">You Pay</span>
                   <button
                     className="text-xs text-primary font-medium"
-                    onClick={() => handlePayAmountChange("100")}
-                  >
+                    onClick={() => handlePayAmountChange("100")}>
                     MAX
                   </button>
                 </div>
@@ -172,14 +190,12 @@ export function SwapCard({
                   </div>
                 </div>
               </div>
-
               {/* Arrow */}
               <div className="flex justify-center">
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center ring-1 ring-primary/30 shadow-lg shadow-primary/10">
                   <ArrowDown className="w-5 h-5 text-primary" />
                 </div>
               </div>
-
               {/* You Receive */}
               <div className="space-y-2">
                 <span className="text-sm text-muted-foreground">
@@ -205,7 +221,6 @@ export function SwapCard({
                   </div>
                 </div>
               </div>
-
               {/* Rate */}
               <div className="flex items-center justify-between py-2 px-1">
                 <span className="text-xs text-muted-foreground">Rate</span>
@@ -213,38 +228,17 @@ export function SwapCard({
                   1 PAZA ≈ {rate} PUSD
                 </span>
               </div>
-
               {/* Action Button */}
-              {!buyTxResult ? (
+              {!isConnected && !buyTxResult ? (
+                <WalletSelector
+                  onSelectWallet={connectWallet}
+                  isConnecting={isConnecting}
+                  buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+                  buttonLabel="Connect Wallet to Buy"></WalletSelector>
+              ) : !buyTxResult ? (
                 <Button
                   className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
-                  onClick={
-                    isConnected
-                      ? () => {
-                          if (!payAmount || Number(payAmount) <= 0) {
-                            toast.error("Please enter an amount");
-                            return;
-                          }
-                          if (Number(payAmount) > numericBalance) {
-                            toast("Insufficient PUSD balance", {
-                              description: `You have ${pusdBalance} PUSD but tried to spend ${payAmount} PUSD`,
-                              style: {
-                                background: "#451a03",
-                                border: "1px solid #b45309",
-                                color: "#fbbf24",
-                              },
-                            });
-                            return;
-                          }
-                          const txHash = generateTxHash();
-                          setBuyTxResult({
-                            message: `Buying ${receiveAmount} PAZA for ${payAmount} PUSD`,
-                            txHash,
-                          });
-                        }
-                      : onConnect
-                  }
-                >
+                  onClick={handleBuy}>
                   {isConnected ? "Buy PAZA" : "Connect Wallet to Buy"}
                 </Button>
               ) : (
@@ -263,11 +257,21 @@ export function SwapCard({
         )}
 
         {activeTab === "send" && (
-          <SendTab isConnected={isConnected} onConnect={onConnect} />
+          <SendTab
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            onConnect={connectWallet}
+            address={address}
+          />
         )}
 
         {activeTab === "receive" && (
-          <ReceiveTab isConnected={isConnected} onConnect={onConnect} />
+          <ReceiveTab
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            onConnect={connectWallet}
+            address={address}
+          />
         )}
       </div>
     </Card>
@@ -277,11 +281,15 @@ export function SwapCard({
 type TokenType = "PAZA" | "PUSD";
 
 function SendTab({
+  isConnecting,
   isConnected,
   onConnect,
+  address = "",
 }: {
+  isConnecting: boolean;
   isConnected: boolean;
-  onConnect: () => void;
+  onConnect: (type: WalletType) => Promise<Wallet | null | undefined>;
+  address?: string;
 }) {
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -295,6 +303,22 @@ function SendTab({
   const [scanError, setScanError] = useState<string | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const scannerContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleSend = () => {
+    if (!recipient) {
+      toast.error("Please enter a recipient address");
+      return;
+    }
+    if (!amount || Number(amount) <= 0) {
+      toast.error("Please enter an amount");
+      return;
+    }
+    const txHash = generateTxHash();
+    setSendTxResult({
+      message: `Sending ${amount} ${selectedToken} to ${recipient.slice(0, 6)}...${recipient.slice(-4)}`,
+      txHash,
+    });
+  };
 
   const startScanner = async () => {
     setScanError(null);
@@ -323,7 +347,7 @@ function SendTab({
         },
         () => {
           // QR code not found - ignore silently
-        },
+        }
       );
     } catch (err) {
       setScanError("Camera access denied or not available");
@@ -360,16 +384,14 @@ function SendTab({
             <span className="text-sm text-muted-foreground">Scan QR Code</span>
             <button
               onClick={stopScanner}
-              className="flex items-center gap-1 text-xs text-destructive font-medium"
-            >
+              className="flex items-center gap-1 text-xs text-destructive font-medium">
               <X className="w-4 h-4" />
               Cancel
             </button>
           </div>
           <div
             ref={scannerContainerRef}
-            className="relative rounded-xl overflow-hidden bg-black"
-          >
+            className="relative rounded-xl overflow-hidden bg-black">
             <div id="qr-reader" className="w-full" />
           </div>
           {scanError && (
@@ -385,8 +407,7 @@ function SendTab({
               </span>
               <button
                 onClick={startScanner}
-                className="flex items-center gap-1 text-xs text-primary font-medium"
-              >
+                className="flex items-center gap-1 text-xs text-primary font-medium">
                 <Scan className="w-4 h-4" />
                 Scan QR
               </button>
@@ -415,8 +436,7 @@ function SendTab({
               <div className="relative">
                 <button
                   onClick={() => setIsTokenMenuOpen(!isTokenMenuOpen)}
-                  className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0 hover:bg-primary/30 transition-colors"
-                >
+                  className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0 hover:bg-primary/30 transition-colors">
                   {selectedToken === "PAZA" ? (
                     <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-[10px] font-bold text-primary-foreground">
@@ -445,8 +465,7 @@ function SendTab({
                         setSelectedToken("PAZA");
                         setIsTokenMenuOpen(false);
                       }}
-                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PAZA" ? "bg-secondary" : ""}`}
-                    >
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PAZA" ? "bg-secondary" : ""}`}>
                       <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-[10px] font-bold text-primary-foreground">
                           P
@@ -461,8 +480,7 @@ function SendTab({
                         setSelectedToken("PUSD");
                         setIsTokenMenuOpen(false);
                       }}
-                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PUSD" ? "bg-secondary" : ""}`}
-                    >
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PUSD" ? "bg-secondary" : ""}`}>
                       <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-[10px] font-bold text-primary-foreground">
                           $
@@ -478,29 +496,16 @@ function SendTab({
             </div>
           </div>
 
-          {!sendTxResult ? (
+          {!isConnected && !sendTxResult ? (
+            <WalletSelector
+              onSelectWallet={onConnect}
+              isConnecting={isConnecting}
+              buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+              buttonLabel="Connect Wallet to Send"></WalletSelector>
+          ) : !sendTxResult ? (
             <Button
               className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={
-                isConnected
-                  ? () => {
-                      if (!recipient) {
-                        toast.error("Please enter a recipient address");
-                        return;
-                      }
-                      if (!amount || Number(amount) <= 0) {
-                        toast.error("Please enter an amount");
-                        return;
-                      }
-                      const txHash = generateTxHash();
-                      setSendTxResult({
-                        message: `Sending ${amount} ${selectedToken} to ${recipient.slice(0, 6)}...${recipient.slice(-4)}`,
-                        txHash,
-                      });
-                    }
-                  : onConnect
-              }
-            >
+              onClick={handleSend}>
               {isConnected ? `Send ${selectedToken}` : "Connect Wallet to Send"}
             </Button>
           ) : (
@@ -521,15 +526,20 @@ function SendTab({
 }
 
 function ReceiveTab({
+  isConnecting,
   isConnected,
   onConnect,
+  address = "",
 }: {
+  isConnecting: boolean;
   isConnected: boolean;
-  onConnect: () => void;
+  onConnect: (type: WalletType) => Promise<Wallet | null | undefined>;
+  address?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const fullAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f8dE8A";
+
+  const fullAddress = address;
   const displayAddress = `${fullAddress.slice(0, 6)}...${fullAddress.slice(-4)}`;
 
   useEffect(() => {
@@ -561,11 +571,11 @@ function ReceiveTab({
           {mounted ? (
             <QRCode
               value={fullAddress}
-              size={160}
+              size={192}
               bgColor="#FFFFFF"
-              fgColor="#1e293b"
-              qrStyle="squares"
-              logoImage="/paza-logo.png"
+              fgColor="#000000"
+              qrStyle="dots"
+              logoImage="/icon.png"
               logoWidth={36}
               logoHeight={36}
               logoPadding={3}
@@ -586,8 +596,7 @@ function ReceiveTab({
           <p className="text-sm text-muted-foreground">Your PAZA Address</p>
           <button
             onClick={copyToClipboard}
-            className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]"
-          >
+            className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]">
             <code className="text-sm text-foreground">{displayAddress}</code>
             {copied ? (
               <Check className="w-4 h-4 text-primary" />
@@ -599,12 +608,11 @@ function ReceiveTab({
         </div>
         {!isConnected && (
           <div className="w-full pt-2">
-            <Button
-              className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={onConnect}
-            >
-              Connect Wallet
-            </Button>
+            <WalletSelector
+              onSelectWallet={onConnect}
+              isConnecting={isConnecting}
+              buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+              buttonLabel="Connect Wallet to see Address"></WalletSelector>
           </div>
         )}
       </div>

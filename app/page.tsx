@@ -5,37 +5,49 @@ import { WalletHeader } from "@/components/wallet-header";
 import { SwapCard } from "@/components/swap-card";
 import { StepsSection } from "@/components/steps-section";
 import { WalletBanner } from "@/components/wallet-banner";
+import { useWallet } from "@/contexts/wallet-context";
+import { useAccountBalances } from "@/contexts/acount-balances-context";
 
 export default function PazaWallet() {
-  const [isConnected, setIsConnected] = useState(false);
+  // const [isConnected, setIsConnected] = useState(false);
   const [activeTab, setActiveTab] = useState<"buy" | "send" | "receive">("buy");
-  const [walletAddress, setWalletAddress] = useState<string>();
-  const [pusdBalance, setPusdBalance] = useState<string>("0.00");
-  const [usdtBalance, setUsdtBalance] = useState<string>("0.00"); // Declare usdtBalance variable
+  // const [walletAddress, setWalletAddress] = useState<string>();
+  // const [pusdBalance, setPusdBalance] = useState<string>("0.00");
+  // const [usdtBalance, setUsdtBalance] = useState<string>("0.00"); // Declare usdtBalance variable
+
+  const {
+    address,
+    isConnecting,
+    isConnected,
+    connectWallet,
+    disconnectWallet,
+  } = useWallet();
+
+  const { pusdBalance } = useAccountBalances();
 
   const handleConnect = () => {
     // Simulate wallet connection
-    setIsConnected(true);
-    setWalletAddress("0x742d35Cc6634C0532925a3b844Bc9e7595f8dE8A");
-    setPusdBalance("100.00"); // Simulated balance
-    setUsdtBalance("500.25"); // Simulated USDT balance
+    // setIsConnected(ttue);
+    // setWalletAddress(address);
+    // setPusdBalance("100.00"); // Simulated balance
+    // setUsdtBalance("500.25"); // Simulated USDT balance
   };
 
   const handleDisconnect = () => {
-    setIsConnected(false);
-    setWalletAddress(undefined);
-    setUsdtBalance("0.00"); // Reset USDT balance on disconnect
+    // setIsConnected(false);
+    // setWalletAddress(undefined);
+    // setUsdtBalance("0.00"); // Reset USDT balance on disconnect
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <WalletHeader
-        isConnected={isConnected}
-        onConnect={handleConnect}
-        onDisconnect={handleDisconnect}
-        address={walletAddress}
+      <WalletHeader />
+      {/* isConnected
+        onConnect={connectWallet}
+        onDisconnect={disconnectWallet}
+        address={address}
         pusdBalance={pusdBalance}
-      />
+      /> */}
 
       <main className="px-4 py-4 pb-8 lg:px-0 lg:py-0">
         {/* Desktop Hero Layout */}
@@ -53,15 +65,13 @@ export default function PazaWallet() {
           {/* Grid pattern */}
           <svg
             className="absolute inset-0 w-full h-full opacity-40"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+            xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern
                 id="grid"
                 width="50"
                 height="50"
-                patternUnits="userSpaceOnUse"
-              >
+                patternUnits="userSpaceOnUse">
                 <path
                   d="M 50 0 L 0 0 0 50"
                   fill="none"
@@ -78,8 +88,7 @@ export default function PazaWallet() {
           <svg
             className="absolute top-32 right-48 w-80 h-80 opacity-30 animate-float"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 100 100"
-          >
+            viewBox="0 0 100 100">
             <defs>
               <linearGradient id="hexGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
@@ -105,8 +114,7 @@ export default function PazaWallet() {
           <svg
             className="absolute bottom-48 left-32 w-64 h-64 opacity-25 animate-float-delayed"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 100 100"
-          >
+            viewBox="0 0 100 100">
             <defs>
               <linearGradient id="hexGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.25" />
@@ -126,8 +134,7 @@ export default function PazaWallet() {
           <svg
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-225 opacity-20 animate-circle-pulse"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 200 200"
-          >
+            viewBox="0 0 200 200">
             <circle
               cx="100"
               cy="100"
@@ -135,8 +142,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1"
-              opacity="0.3"
-            >
+              opacity="0.3">
               <animate
                 attributeName="r"
                 values="90;95;90"
@@ -157,8 +163,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1"
-              opacity="0.4"
-            >
+              opacity="0.4">
               <animate
                 attributeName="r"
                 values="70;74;70"
@@ -179,8 +184,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1.5"
-              opacity="0.5"
-            >
+              opacity="0.5">
               <animate
                 attributeName="r"
                 values="50;53;50"
@@ -201,8 +205,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1"
-              opacity="0.3"
-            >
+              opacity="0.3">
               <animate
                 attributeName="r"
                 values="30;33;30"
@@ -281,13 +284,7 @@ export default function PazaWallet() {
               <div className="flex items-center justify-center">
                 <div className="w-full max-w-md">
                   <WalletBanner isConnected={isConnected} />
-                  <SwapCard
-                    activeTab={activeTab}
-                    onTabChange={setActiveTab}
-                    isConnected={isConnected}
-                    onConnect={handleConnect}
-                    pusdBalance={pusdBalance}
-                  />
+                  <SwapCard activeTab={activeTab} onTabChange={setActiveTab} />
                 </div>
               </div>
             </div>
@@ -304,13 +301,7 @@ export default function PazaWallet() {
         <div className="lg:hidden max-w-md mx-auto space-y-4">
           <WalletBanner isConnected={isConnected} />
 
-          <SwapCard
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            isConnected={isConnected}
-            onConnect={handleConnect}
-            pusdBalance={pusdBalance}
-          />
+          <SwapCard activeTab={activeTab} onTabChange={setActiveTab} />
 
           <StepsSection />
 

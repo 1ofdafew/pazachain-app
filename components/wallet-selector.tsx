@@ -147,6 +147,7 @@ export function WalletSelector({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
+          size={"sm"}
           disabled={isConnecting}
           className={`gap-2 h-11 px-4 ${buttonClassName}`}>
           <WalletIcon className="w-4 h-4" />

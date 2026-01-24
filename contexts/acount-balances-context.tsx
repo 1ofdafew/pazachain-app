@@ -4,11 +4,12 @@ import { createContext, useCallback, useContext, useMemo } from "react";
 import { useReadContract } from "thirdweb/react";
 import { PAZATokenContract, PUSDTokenContract } from "@/lib/thirdweb";
 import { useWallet } from "./wallet-context";
+import { formatUnits } from "ethers";
 
 const AccountBalancesContext = createContext<{
-  pazaBalance: bigint;
-  pazaFrozen: bigint;
-  pusdBalance: bigint;
+  pazaBalance: string;
+  pazaFrozen: string;
+  pusdBalance: string;
   refresh: () => Promise<void>;
 } | null>(null);
 
@@ -37,6 +38,7 @@ export function AccountBalancesProvider({
     method: "function balanceOf(address) view returns (uint256)",
     params: [address],
   });
+
   const refresh = useCallback(async () => {
     await Promise.all([
       pazaRead.refetch(),
@@ -47,9 +49,10 @@ export function AccountBalancesProvider({
 
   const value = useMemo(
     () => ({
-      pazaBalance: pazaRead.data ?? 0n,
-      pazaFrozen: frozenRead.data ?? 0n,
-      pusdBalance: pusdRead.data ?? 0n,
+      pazaBalance: pazaRead.data != null ? formatUnits(pazaRead.data, 6) : "",
+      pazaFrozen:
+        frozenRead.data != null ? formatUnits(frozenRead.data, 6) : "",
+      pusdBalance: pusdRead.data != null ? formatUnits(pusdRead.data, 6) : "",
       refresh,
     }),
     [pazaRead.data, frozenRead.data, pusdRead.data, refresh]
