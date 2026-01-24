@@ -51,7 +51,7 @@ function TransactionResult({
   txHash: string;
   onDismiss: () => void;
 }) {
-  const explorerUrl = `https://bscscan.com/tx/${txHash}`;
+  const explorerUrl = `https://basescan.org/tx/${txHash}`;
   const shortHash = `${txHash.slice(0, 10)}...${txHash.slice(-8)}`;
 
   return (
