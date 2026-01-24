@@ -20,6 +20,7 @@ import { useWallet, WalletType } from "@/contexts/wallet-context";
 import { WalletSelector } from "./wallet-selector";
 import { Wallet } from "thirdweb/wallets";
 import { useAccountBalances } from "@/contexts/acount-balances-context";
+import { formatCurrency } from "@/lib/thirdweb";
 
 const QRCode = dynamic(
   () => import("react-qrcode-logo").then((mod) => mod.QRCode),
@@ -261,7 +262,6 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
             isConnecting={isConnecting}
             isConnected={isConnected}
             onConnect={connectWallet}
-            address={address}
           />
         )}
 
@@ -284,12 +284,10 @@ function SendTab({
   isConnecting,
   isConnected,
   onConnect,
-  address = "",
 }: {
   isConnecting: boolean;
   isConnected: boolean;
   onConnect: (type: WalletType) => Promise<Wallet | null | undefined>;
-  address?: string;
 }) {
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -303,6 +301,8 @@ function SendTab({
   const [scanError, setScanError] = useState<string | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const scannerContainerRef = useRef<HTMLDivElement>(null);
+
+  const { pazaBalance, pusdBalance } = useAccountBalances();
 
   const handleSend = () => {
     if (!recipient) {
@@ -401,6 +401,49 @@ function SendTab({
       ) : (
         <>
           <div className="space-y-2">
+            <div className="text-sm text-muted-foreground">Asset Balances</div>
+            <div className="flex items-center justify-between gap-x-2 border border-primary-200 rounded-xl px-2">
+              <div className="w-full px-2 py-4">
+                <div className="rounded-lg bg-secondary px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
+                      <span className="text-[10px] font-bold text-primary-foreground">
+                        $
+                      </span>
+                    </div>
+                    <span className="text-sm text-muted-foreground font-semibold">
+                      PAZA
+                    </span>
+                  </div>
+                  <div className="py-2 flex justify-end text-sm font-semibold text-foreground">
+                    <span className="ml-auto">
+                      {formatCurrency(parseFloat(pazaBalance), 2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full px-2 py-4">
+                <div className="rounded-lg bg-secondary px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
+                      <span className="text-[10px] font-bold text-primary-foreground">
+                        $
+                      </span>
+                    </div>
+                    <span className="text-sm text-muted-foreground font-semibold">
+                      PUSD
+                    </span>
+                  </div>
+                  <div className="py-2 flex justify-end text-sm font-semibold text-foreground">
+                    <span className="ml-auto">
+                      {formatCurrency(parseFloat(pusdBalance), 2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
                 Recipient Address
@@ -419,7 +462,6 @@ function SendTab({
               className="bg-secondary border-0 h-12 text-foreground placeholder:text-muted-foreground"
             />
           </div>
-
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Amount</span>
@@ -495,7 +537,6 @@ function SendTab({
               </div>
             </div>
           </div>
-
           {!isConnected && !sendTxResult ? (
             <WalletSelector
               onSelectWallet={onConnect}
@@ -612,7 +653,7 @@ function ReceiveTab({
               onSelectWallet={onConnect}
               isConnecting={isConnecting}
               buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              buttonLabel="Connect Wallet to see Address"></WalletSelector>
+              buttonLabel="Connect Wallet for Actual Address"></WalletSelector>
           </div>
         )}
       </div>
