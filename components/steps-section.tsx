@@ -42,7 +42,7 @@ export function StepsSection() {
           <div
             key={step.number}
             className="flex items-start gap-4 bg-card rounded-xl p-4 lg:p-5 border border-border hover:border-primary/30 transition-colors">
-            <div className="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="shrink-0 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <step.icon className="w-5 h-5 lg:w-6 lg:h-6 text-primary" />
             </div>
             <div className="flex-1 min-w-0">

@@ -22,7 +22,7 @@ const QRCode = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-[160px] h-[160px] bg-muted animate-pulse rounded-lg" />
+      <div className="w-40 h-40 bg-muted animate-pulse rounded-lg" />
     ),
   }
 );
@@ -430,7 +430,7 @@ function SendTab({
                 </button>
 
                 {isTokenMenuOpen && (
-                  <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-[120px]">
+                  <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-30">
                     <button
                       onClick={() => {
                         setSelectedToken("PAZA");
@@ -567,7 +567,7 @@ function ReceiveTab({
               eyeColor="#3B82F6"
             />
           ) : (
-            <div className="w-[160px] h-[160px] bg-muted animate-pulse rounded-lg" />
+            <div className="w-40 h-40 bg-muted animate-pulse rounded-lg" />
           )}
         </div>
         <div className="text-center space-y-2 w-full">

@@ -41,12 +41,12 @@ export default function PazaWallet() {
         {/* Desktop Hero Layout */}
         <div className="hidden lg:block relative overflow-hidden">
           {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/5" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-background to-primary/5" />
 
           {/* Glowing orbs - More prominent */}
-          <div className="absolute top-20 right-40 w-[600px] h-[600px] bg-primary/20 rounded-full blur-3xl animate-pulse-slow" />
+          <div className="absolute top-20 right-40 w-150 h-150 bg-primary/20 rounded-full blur-3xl animate-pulse-slow" />
           <div
-            className="absolute bottom-20 left-40 w-[500px] h-[500px] bg-primary/15 rounded-full blur-3xl animate-pulse-slow"
+            className="absolute bottom-20 left-40 w-125 h-125 bg-primary/15 rounded-full blur-3xl animate-pulse-slow"
             style={{ animationDelay: "1s" }}
           />
 
@@ -120,7 +120,7 @@ export default function PazaWallet() {
 
           {/* Concentric circles - Pulsating */}
           <svg
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] opacity-20 animate-circle-pulse"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-225 opacity-20 animate-circle-pulse"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 200 200">
             <circle
@@ -223,7 +223,7 @@ export default function PazaWallet() {
 
                   <h1 className="text-6xl font-bold text-foreground leading-tight text-balance">
                     Buy, Send & Receive{" "}
-                    <span className="text-primary bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                    <span className="text-primary bg-linear-to-r from-primary to-primary/60 bg-clip-text">
                       PAZA
                     </span>{" "}
                     Tokens
