@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -8,7 +8,13 @@ import { ThirdwebProvider } from "thirdweb/react";
 import { WalletProvider } from "@/contexts/wallet-context";
 import { AccountBalancesProvider } from "@/contexts/acount-balances-context";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const geistSans = Geist({
+  variable: "--font-sans",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
   title: "PAZA Wallet",
@@ -48,7 +54,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
         <ThirdwebProvider>
           <WalletProvider>
             <AccountBalancesProvider>{children}</AccountBalancesProvider>
