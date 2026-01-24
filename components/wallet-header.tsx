@@ -42,7 +42,7 @@ export function WalletHeader({
     : "";
   const formattedBalance = Number.parseFloat(pusdBalance).toLocaleString(
     undefined,
-    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 },
   );
   const explorerUrl = address ? `https://bscscan.com/address/${address}` : "";
 
@@ -79,7 +79,8 @@ export function WalletHeader({
             <DropdownMenuTrigger asChild>
               <Button
                 size="sm"
-                className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+                className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+              >
                 <Wallet className="w-4 h-4" />
                 {displayAddress}
                 <ChevronDown className="w-3 h-3 opacity-70" />
@@ -131,7 +132,8 @@ export function WalletHeader({
               <DropdownMenuItem
                 onClick={onDisconnect}
                 variant="destructive"
-                className="gap-3 py-2.5">
+                className="gap-3 py-2.5"
+              >
                 <LogOut className="w-4 h-4" />
                 <span>Disconnect</span>
               </DropdownMenuItem>
@@ -141,7 +143,8 @@ export function WalletHeader({
           <Button
             onClick={onConnect}
             size="sm"
-            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+          >
             <Wallet className="w-4 h-4" />
             Connect
           </Button>
