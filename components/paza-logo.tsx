@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import Image from "next/image"
+import Image from "next/image";
 
 export function PazaLogo({ className = "w-8 h-8" }: { className?: string }) {
   return (
@@ -11,5 +11,5 @@ export function PazaLogo({ className = "w-8 h-8" }: { className?: string }) {
       height={32}
       className={className}
     />
-  )
+  );
 }
