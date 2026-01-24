@@ -187,7 +187,7 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
                     <span className="text-sm font-medium text-foreground">
                       PUSD
                     </span>
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    {/* <ChevronDown className="w-4 h-4 text-muted-foreground" /> */}
                   </div>
                 </div>
               </div>
@@ -202,7 +202,7 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
                 <span className="text-sm text-muted-foreground">
                   You Receive
                 </span>
-                <div className="flex items-center gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
+                <div className="flex items-center mt-2 gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
                   <Input
                     type="number"
                     placeholder="0.00"
@@ -653,7 +653,7 @@ function ReceiveTab({
               onSelectWallet={onConnect}
               isConnecting={isConnecting}
               buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              buttonLabel="Connect Wallet for Actual Address"></WalletSelector>
+              buttonLabel="Connect Wallet to Receive"></WalletSelector>
           </div>
         )}
       </div>
