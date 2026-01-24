@@ -9,6 +9,7 @@ import { formatUnits } from "ethers";
 const AccountBalancesContext = createContext<{
   pazaBalance: string;
   pazaFrozen: string;
+  pazaAvailable: string;
   pusdBalance: string;
   refresh: () => Promise<void>;
 } | null>(null);
@@ -49,10 +50,13 @@ export function AccountBalancesProvider({
 
   const value = useMemo(
     () => ({
-      pazaBalance: pazaRead.data != null ? formatUnits(pazaRead.data, 6) : "",
-      pazaFrozen:
-        frozenRead.data != null ? formatUnits(frozenRead.data, 6) : "",
-      pusdBalance: pusdRead.data != null ? formatUnits(pusdRead.data, 6) : "",
+      pazaBalance: pazaRead.data ? formatUnits(pazaRead.data, 6) : "",
+      pazaFrozen: frozenRead.data ? formatUnits(frozenRead.data, 6) : "",
+      pazaAvailable:
+        pazaRead.data && frozenRead.data
+          ? formatUnits(pazaRead.data - frozenRead.data, 6)
+          : "",
+      pusdBalance: pusdRead.data ? formatUnits(pusdRead.data, 6) : "",
       refresh,
     }),
     [pazaRead.data, frozenRead.data, pusdRead.data, refresh]

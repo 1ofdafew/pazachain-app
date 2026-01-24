@@ -91,7 +91,7 @@ interface SwapCardProps {
 export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
   const { isConnected, isConnecting, connectWallet, address } = useWallet();
   // const { pusdBalance } = useAccountBalances();
-  const pusdBalance = "1,000.00";
+  const pusdBalance = "1000.00";
 
   // Parse balance (remove commas for numeric comparison)
   const numericBalance = Number.parseFloat(pusdBalance.replace(/,/g, ""));
@@ -107,7 +107,8 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
     if (value && !isNaN(Number(value))) {
-      setReceiveAmount((Number(value) / rate).toFixed(2));
+      const amt = Number(value) / rate;
+      setReceiveAmount(amt.toFixed(2));
     } else {
       setReceiveAmount("");
     }
@@ -166,7 +167,7 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
                   <span className="text-sm text-muted-foreground">You Pay</span>
                   <button
                     className="text-xs text-primary font-medium"
-                    onClick={() => handlePayAmountChange("100")}>
+                    onClick={() => handlePayAmountChange(pusdBalance)}>
                     MAX
                   </button>
                 </div>
@@ -302,7 +303,7 @@ function SendTab({
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const scannerContainerRef = useRef<HTMLDivElement>(null);
 
-  const { pazaBalance, pusdBalance } = useAccountBalances();
+  const { pazaAvailable, pusdBalance } = useAccountBalances();
 
   const handleSend = () => {
     if (!recipient) {
@@ -401,7 +402,9 @@ function SendTab({
       ) : (
         <>
           <div className="space-y-2">
-            <div className="text-sm text-muted-foreground">Asset Balances</div>
+            <div className="text-sm text-muted-foreground">
+              Asset Available Balances
+            </div>
             <div className="flex items-center justify-between gap-x-2 border border-primary-200 rounded-xl px-2">
               <div className="w-full px-2 py-4">
                 <div className="rounded-lg bg-secondary px-3 py-2">
@@ -417,7 +420,7 @@ function SendTab({
                   </div>
                   <div className="py-2 flex justify-end text-sm font-semibold text-foreground">
                     <span className="ml-auto">
-                      {formatCurrency(parseFloat(pazaBalance), 2)}
+                      {formatCurrency(parseFloat(pazaAvailable), 2)}
                     </span>
                   </div>
                 </div>
