@@ -104,14 +104,29 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
 
   const rate = 0.017; // 1 PAZA = 0.017 PUSD
 
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
-    if (value && !isNaN(Number(value))) {
-      const amt = Number(value) / rate;
-      setReceiveAmount(amt.toFixed(2));
-    } else {
-      setReceiveAmount("");
+
+    if (typingTimeout.current) {
+      clearTimeout(typingTimeout.current);
     }
+
+    typingTimeout.current = setTimeout(() => {
+      if (value !== "" && !isNaN(Number(value))) {
+        const amt = Number(value) / rate;
+
+        setReceiveAmount(
+          amt.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
+      } else {
+        setReceiveAmount("");
+      }
+    }, 200); // 300ms feels natural
   };
 
   const handleBuy = () => {
@@ -204,13 +219,16 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
                   You Receive
                 </span>
                 <div className="flex items-center mt-2 gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
-                  <Input
-                    type="number"
+                  {/* <Input
+                    // type="number"
                     placeholder="0.00"
                     value={receiveAmount}
                     readOnly
                     className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0"
-                  />
+                  /> */}
+                  <div className="w-full border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0">
+                    {receiveAmount}
+                  </div>
                   <div className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0">
                     <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-[10px] font-bold text-primary-foreground">
