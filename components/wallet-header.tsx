@@ -94,9 +94,10 @@ export function WalletHeader() {
             <DropdownMenuTrigger asChild>
               <Button
                 size="sm"
-                className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+                className="h-9 gap-2 bg-card text-primary-foreground hover:bg-primary/90 font-medium border">
+                <div className="w-2 h-2 rounded-full bg-green-500" />
                 <WalletIcon className="w-4 h-4" />
-                {displayAddress}
+                <div className="hidden md:block">{displayAddress}</div>
                 <ChevronDown className="w-3 h-3 opacity-70" />
               </Button>
             </DropdownMenuTrigger>
