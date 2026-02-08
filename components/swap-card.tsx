@@ -101,6 +101,7 @@ export function SwapCard({
     PUSD: pusdBalance,
     USDT: "1,250.00",
     USDC: "850.50",
+    PAZA: "1,000.00", // Add PAZA balance
   };
 
   // Parse balance (remove commas for numeric comparison)
@@ -134,211 +135,252 @@ export function SwapCard({
   return (
     <>
       <Card className="bg-card border-border overflow-hidden">
-      {/* Tab Navigation */}
-      <div className="flex border-b border-border">
-        {(["buy", "send", "receive"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => onTabChange(tab)}
-            className={`flex-1 py-3 text-sm font-medium capitalize transition-colors ${
-              activeTab === tab
-                ? "text-primary border-b-2 border-primary bg-primary/5"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+        {/* Tab Navigation */}
+        <div className="flex border-b border-border">
+          {(["buy", "send", "receive"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => onTabChange(tab)}
+              className={`flex-1 py-3 text-sm font-medium capitalize transition-colors ${
+                activeTab === tab
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-      <div className="p-4 space-y-4">
-        {activeTab === "buy" && (
-          <div className="relative">
-            {/* Glow effect */}
-            <div className="absolute -inset-1 bg-primary/20 blur-xl rounded-2xl" />
-            <div className="relative space-y-4">
-              {/* You Pay */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">You Pay</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">
-                      Balance: {tokenBalances[selectedPayToken]}
+        <div className="p-4 space-y-4">
+          {activeTab === "buy" && (
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-primary/20 blur-xl rounded-2xl" />
+              <div className="relative space-y-4">
+                {/* You Pay */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      You Pay
                     </span>
-                    <button
-                      className="text-xs text-primary font-medium"
-                      onClick={() => handlePayAmountChange(tokenBalances[selectedPayToken].replace(/,/g, ""))}
-                    >
-                      MAX
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">
+                        Balance: {tokenBalances[selectedPayToken]}
+                      </span>
+                      <button
+                        className="text-xs text-primary font-medium"
+                        onClick={() =>
+                          handlePayAmountChange(
+                            tokenBalances[selectedPayToken].replace(/,/g, ""),
+                          )
+                        }
+                      >
+                        MAX
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      value={payAmount}
+                      onChange={(e) => handlePayAmountChange(e.target.value)}
+                      className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <div className="relative">
+                      <button
+                        onClick={() =>
+                          setIsPayTokenMenuOpen(!isPayTokenMenuOpen)
+                        }
+                        className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 shrink-0 hover:bg-muted/80 transition-colors"
+                      >
+                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-primary-foreground">
+                            {selectedPayToken === "PUSD"
+                              ? "$"
+                              : selectedPayToken === "USDT"
+                                ? "T"
+                                : "C"}
+                          </span>
+                        </div>
+                        <span className="text-sm font-medium text-foreground">
+                          {selectedPayToken}
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-muted-foreground transition-transform ${isPayTokenMenuOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+
+                      {isPayTokenMenuOpen && (
+                        <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-[180px]">
+                          {(["PUSD", "USDT", "USDC"] as const).map((token) => (
+                            <button
+                              key={token}
+                              onClick={() => {
+                                setSelectedPayToken(token);
+                                setIsPayTokenMenuOpen(false);
+                              }}
+                              className={`flex items-center justify-between w-full px-3 py-2.5 hover:bg-secondary transition-colors ${
+                                selectedPayToken === token ? "bg-secondary" : ""
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                                  <span className="text-[10px] font-bold text-primary-foreground">
+                                    {token === "PUSD"
+                                      ? "$"
+                                      : token === "USDT"
+                                        ? "T"
+                                        : "C"}
+                                  </span>
+                                </div>
+                                <span className="text-sm font-medium text-foreground">
+                                  {token}
+                                </span>
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                {tokenBalances[token]}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
-                  <Input
-                    type="number"
-                    placeholder="0.00"
-                    value={payAmount}
-                    onChange={(e) => handlePayAmountChange(e.target.value)}
-                    className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <div className="relative">
-                    <button
-                      onClick={() => setIsPayTokenMenuOpen(!isPayTokenMenuOpen)}
-                      className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 shrink-0 hover:bg-muted/80 transition-colors"
-                    >
+
+                {/* Arrow */}
+                <div className="flex justify-center">
+                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center ring-1 ring-primary/30 shadow-lg shadow-primary/10">
+                    <ArrowDown className="w-5 h-5 text-primary" />
+                  </div>
+                </div>
+
+                {/* You Receive */}
+                <div className="space-y-2">
+                  <span className="text-sm text-muted-foreground">
+                    You Receive
+                  </span>
+                  <div className="flex items-center gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      value={receiveAmount}
+                      readOnly
+                      className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <div className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0">
                       <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-[10px] font-bold text-primary-foreground">
-                          {selectedPayToken === "PUSD" ? "$" : selectedPayToken === "USDT" ? "T" : "C"}
+                          P
                         </span>
                       </div>
                       <span className="text-sm font-medium text-foreground">
-                        {selectedPayToken}
-                      </span>
-                      <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isPayTokenMenuOpen ? "rotate-180" : ""}`} />
-                    </button>
-
-                    {isPayTokenMenuOpen && (
-                      <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-[180px]">
-                        {(["PUSD", "USDT", "USDC"] as const).map((token) => (
-                          <button
-                            key={token}
-                            onClick={() => {
-                              setSelectedPayToken(token);
-                              setIsPayTokenMenuOpen(false);
-                            }}
-                            className={`flex items-center justify-between w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedPayToken === token ? "bg-secondary" : ""}`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-primary-foreground">
-                                  {token === "PUSD" ? "$" : token === "USDT" ? "T" : "C"}
-                                </span>
-                              </div>
-                              <span className="text-sm font-medium text-foreground">
-                                {token}
-                              </span>
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                              {tokenBalances[token]}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Arrow */}
-              <div className="flex justify-center">
-                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center ring-1 ring-primary/30 shadow-lg shadow-primary/10">
-                  <ArrowDown className="w-5 h-5 text-primary" />
-                </div>
-              </div>
-
-              {/* You Receive */}
-              <div className="space-y-2">
-                <span className="text-sm text-muted-foreground">
-                  You Receive
-                </span>
-                <div className="flex items-center gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
-                  <Input
-                    type="number"
-                    placeholder="0.00"
-                    value={receiveAmount}
-                    readOnly
-                    className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <div className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0">
-                    <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-primary-foreground">
-                        P
+                        PAZA
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-foreground">
-                      PAZA
-                    </span>
                   </div>
                 </div>
-              </div>
 
-              {/* Rate */}
-              <div className="flex items-center justify-between py-2 px-1">
-                <span className="text-xs text-muted-foreground">Rate</span>
-                <span className="text-xs text-foreground">
-                  1 PAZA ≈ {rate} PUSD
-                </span>
-              </div>
+                {/* Rate */}
+                <div className="flex items-center justify-between py-2 px-1">
+                  <span className="text-xs text-muted-foreground">Rate</span>
+                  <span className="text-xs text-foreground">
+                    1 PAZA ≈ {rate} PUSD
+                  </span>
+                </div>
 
-              {/* Action Button */}
-              {!buyTxResult ? (
-                <Button
-                  className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
-                  onClick={
-                    isConnected
-                      ? () => {
-                          if (!payAmount || Number(payAmount) <= 0) {
-                            toast.error("Please enter an amount");
-                            return;
-                          }
-                          if (Number(payAmount) > numericBalance) {
-                            toast("Insufficient PUSD balance", {
-                              description: `You have ${pusdBalance} PUSD but tried to spend ${payAmount} PUSD`,
-                              style: {
-                                background: "#451a03",
-                                border: "1px solid #b45309",
-                                color: "#fbbf24",
-                              },
+                {/* Action Button */}
+                {!buyTxResult ? (
+                  <Button
+                    className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
+                    onClick={
+                      isConnected
+                        ? () => {
+                            if (!payAmount || Number(payAmount) <= 0) {
+                              toast.error("Please enter an amount");
+                              return;
+                            }
+                            if (Number(payAmount) > numericBalance) {
+                              toast("Insufficient PUSD balance", {
+                                description: `You have ${pusdBalance} PUSD but tried to spend ${payAmount} PUSD`,
+                                style: {
+                                  background: "#451a03",
+                                  border: "1px solid #b45309",
+                                  color: "#fbbf24",
+                                },
+                              });
+                              return;
+                            }
+                            const txHash = generateTxHash();
+                            setBuyTxResult({
+                              message: `Buying ${receiveAmount} PAZA for ${payAmount} ${selectedPayToken}`,
+                              txHash,
                             });
-                            return;
                           }
-                          const txHash = generateTxHash();
-                          setBuyTxResult({
-                            message: `Buying ${receiveAmount} PAZA for ${payAmount} ${selectedPayToken}`,
-                            txHash,
-                          });
-                        }
-                  : onConnect
-                  }
-                >
-                  {isConnected ? "Buy PAZA" : "Connect Wallet to Buy"}
-                </Button>
-              ) : (
-                <TransactionResult
-                  message={buyTxResult.message}
-                  txHash={buyTxResult.txHash}
-                  onDismiss={() => {
-                    setBuyTxResult(null);
-                    setPayAmount("");
-                    setReceiveAmount("");
-                  }}
-                />
-              )}
+                        : onConnect
+                    }
+                  >
+                    {isConnected ? "Buy PAZA" : "Connect Wallet to Buy"}
+                  </Button>
+                ) : (
+                  <TransactionResult
+                    message={buyTxResult.message}
+                    txHash={buyTxResult.txHash}
+                    onDismiss={() => {
+                      setBuyTxResult(null);
+                      setPayAmount("");
+                      setReceiveAmount("");
+                    }}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "send" && (
-          <SendTab isConnected={isConnected} onConnect={() => setIsWalletModalOpen(true)} />
-        )}
+          {activeTab === "send" && (
+            <SendTab
+              isConnected={isConnected}
+              onConnect={() => setIsWalletModalOpen(true)}
+              isWalletModalOpen={isWalletModalOpen}
+              setIsWalletModalOpen={setIsWalletModalOpen}
+            />
+          )}
 
-        {activeTab === "receive" && (
-          <ReceiveTab isConnected={isConnected} onConnect={() => setIsWalletModalOpen(true)} />
-        )}
-      </div>
-    </Card>
+          {activeTab === "receive" && (
+            <ReceiveTab
+              isConnected={isConnected}
+              onConnect={() => setIsWalletModalOpen(true)}
+            />
+          )}
+        </div>
+      </Card>
+
+      <WalletConnectModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onSelectWallet={handleWalletSelect}
+      />
+    </>
   );
 }
 
-type TokenType = "PAZA" | "PUSD" | "USDT" | "USDC";
+type TokenType = "PUSD" | "USDT" | "USDC" | "PAZA";
+
+interface SendTabProps {
+  isConnected: boolean;
+  onConnect: () => void;
+  isWalletModalOpen: boolean;
+  setIsWalletModalOpen: (open: boolean) => void;
+}
 
 function SendTab({
   isConnected,
   onConnect,
-}: {
-  isConnected: boolean;
-  onConnect: () => void;
-}) {
+  isWalletModalOpen,
+  setIsWalletModalOpen,
+}: SendTabProps) {
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
   const [selectedToken, setSelectedToken] = useState<TokenType>("PAZA");
@@ -664,12 +706,6 @@ function ReceiveTab({
           </div>
         )}
       </div>
-    </Card>
-      <WalletConnectModal
-        isOpen={isWalletModalOpen}
-        onClose={() => setIsWalletModalOpen(false)}
-        onSelectWallet={handleWalletSelect}
-      />
-    </>
+    </div>
   );
 }
