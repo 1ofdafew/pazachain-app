@@ -95,6 +95,13 @@ export function SwapCard({
   onConnect,
   pusdBalance = "0.00",
 }: SwapCardProps) {
+  // Mock balances for all tokens
+  const tokenBalances = {
+    PUSD: pusdBalance,
+    USDT: "1,250.00",
+    USDC: "850.50",
+  };
+
   // Parse balance (remove commas for numeric comparison)
   const numericBalance = Number.parseFloat(pusdBalance.replace(/,/g, ""));
   const [payAmount, setPayAmount] = useState("");
@@ -146,12 +153,17 @@ export function SwapCard({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">You Pay</span>
-                  <button
-                    className="text-xs text-primary font-medium"
-                    onClick={() => handlePayAmountChange("100")}
-                  >
-                    MAX
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      Balance: {tokenBalances[selectedPayToken]}
+                    </span>
+                    <button
+                      className="text-xs text-primary font-medium"
+                      onClick={() => handlePayAmountChange(tokenBalances[selectedPayToken].replace(/,/g, ""))}
+                    >
+                      MAX
+                    </button>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 bg-secondary rounded-xl p-3 ring-1 ring-primary/20">
                   <Input
@@ -178,7 +190,7 @@ export function SwapCard({
                     </button>
 
                     {isPayTokenMenuOpen && (
-                      <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-32">
+                      <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-[180px]">
                         {(["PUSD", "USDT", "USDC"] as const).map((token) => (
                           <button
                             key={token}
@@ -186,15 +198,20 @@ export function SwapCard({
                               setSelectedPayToken(token);
                               setIsPayTokenMenuOpen(false);
                             }}
-                            className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedPayToken === token ? "bg-secondary" : ""}`}
+                            className={`flex items-center justify-between w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedPayToken === token ? "bg-secondary" : ""}`}
                           >
-                            <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                              <span className="text-[10px] font-bold text-primary-foreground">
-                                {token === "PUSD" ? "$" : token === "USDT" ? "T" : "C"}
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                                <span className="text-[10px] font-bold text-primary-foreground">
+                                  {token === "PUSD" ? "$" : token === "USDT" ? "T" : "C"}
+                                </span>
+                              </div>
+                              <span className="text-sm font-medium text-foreground">
+                                {token}
                               </span>
                             </div>
-                            <span className="text-sm font-medium text-foreground">
-                              {token}
+                            <span className="text-xs text-muted-foreground">
+                              {tokenBalances[token]}
                             </span>
                           </button>
                         ))}
