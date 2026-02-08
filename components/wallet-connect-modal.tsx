@@ -13,14 +13,14 @@ interface WalletOption {
 
 const walletOptions: WalletOption[] = [
   { id: "google", name: "Google", icon: "G", color: "bg-red-500" },
-  { id: "apple", name: "Apple", icon: "", color: "bg-gray-900" },
-  { id: "passkey", name: "Passkey", icon: "🔑", color: "bg-blue-600" },
-  { id: "metamask", name: "MetaMask", icon: "🦊", color: "bg-orange-500" },
+  { id: "apple", name: "Apple", icon: "A", color: "bg-gray-900" },
+  { id: "passkey", name: "Passkey", icon: "P", color: "bg-blue-600" },
+  { id: "metamask", name: "MetaMask", icon: "M", color: "bg-orange-500" },
   { id: "base", name: "Base", icon: "B", color: "bg-blue-700" },
   { id: "binance", name: "Binance", icon: "B", color: "bg-yellow-500" },
-  { id: "tokenpocket", name: "TokenPocket", icon: "T", color: "bg-blue-500" },
+  { id: "tokenpocket", name: "TokenPocket", icon: "TP", color: "bg-blue-500" },
   { id: "safe", name: "Safe", icon: "S", color: "bg-green-600" },
-  { id: "trust", name: "Trust", icon: "T", color: "bg-blue-400" },
+  { id: "trust", name: "Trust", icon: "TW", color: "bg-blue-400" },
 ];
 
 interface WalletConnectModalProps {

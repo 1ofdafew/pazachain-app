@@ -298,7 +298,7 @@ export function SwapCard({
                             txHash,
                           });
                         }
-                      : () => setIsWalletModalOpen(true)
+                  : onConnect
                   }
                 >
                   {isConnected ? "Buy PAZA" : "Connect Wallet to Buy"}
@@ -319,11 +319,11 @@ export function SwapCard({
         )}
 
         {activeTab === "send" && (
-          <SendTab isConnected={isConnected} onConnect={onConnect} />
+          <SendTab isConnected={isConnected} onConnect={() => setIsWalletModalOpen(true)} />
         )}
 
         {activeTab === "receive" && (
-          <ReceiveTab isConnected={isConnected} onConnect={onConnect} />
+          <ReceiveTab isConnected={isConnected} onConnect={() => setIsWalletModalOpen(true)} />
         )}
       </div>
     </Card>
@@ -657,7 +657,7 @@ function ReceiveTab({
           <div className="w-full pt-2">
             <Button
               className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => setIsWalletModalOpen(true)}
+              onClick={onConnect}
             >
               Connect Wallet
             </Button>
