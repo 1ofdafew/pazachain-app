@@ -16,6 +16,7 @@ import {
 import dynamic from "next/dynamic";
 import { Html5Qrcode } from "html5-qrcode";
 import { toast } from "sonner";
+import { WalletConnectModal } from "./wallet-connect-modal";
 
 const QRCode = dynamic(
   () => import("react-qrcode-logo").then((mod) => mod.QRCode),
@@ -108,6 +109,7 @@ export function SwapCard({
   const [receiveAmount, setReceiveAmount] = useState("");
   const [selectedPayToken, setSelectedPayToken] = useState<TokenType>("PUSD");
   const [isPayTokenMenuOpen, setIsPayTokenMenuOpen] = useState(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [buyTxResult, setBuyTxResult] = useState<{
     message: string;
     txHash: string;
@@ -124,8 +126,14 @@ export function SwapCard({
     }
   };
 
+  const handleWalletSelect = (walletId: string) => {
+    console.log("[v0] Selected wallet:", walletId);
+    onConnect();
+  };
+
   return (
-    <Card className="bg-card border-border overflow-hidden">
+    <>
+      <Card className="bg-card border-border overflow-hidden">
       {/* Tab Navigation */}
       <div className="flex border-b border-border">
         {(["buy", "send", "receive"] as const).map((tab) => (
@@ -290,7 +298,7 @@ export function SwapCard({
                             txHash,
                           });
                         }
-                      : onConnect
+                      : () => setIsWalletModalOpen(true)
                   }
                 >
                   {isConnected ? "Buy PAZA" : "Connect Wallet to Buy"}
@@ -546,7 +554,7 @@ function SendTab({
                         txHash,
                       });
                     }
-                  : onConnect
+                  : () => setIsWalletModalOpen(true)
               }
             >
               {isConnected ? `Send ${selectedToken}` : "Connect Wallet to Send"}
@@ -649,13 +657,19 @@ function ReceiveTab({
           <div className="w-full pt-2">
             <Button
               className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={onConnect}
+              onClick={() => setIsWalletModalOpen(true)}
             >
               Connect Wallet
             </Button>
           </div>
         )}
       </div>
-    </div>
+    </Card>
+      <WalletConnectModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onSelectWallet={handleWalletSelect}
+      />
+    </>
   );
 }

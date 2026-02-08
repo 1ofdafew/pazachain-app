@@ -19,6 +19,7 @@ import {
   Check,
   ChevronDown,
 } from "lucide-react";
+import { WalletConnectModal } from "./wallet-connect-modal";
 
 interface WalletHeaderProps {
   isConnected: boolean;
@@ -36,6 +37,7 @@ export function WalletHeader({
   pusdBalance = "0.00",
 }: WalletHeaderProps) {
   const [copied, setCopied] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const displayAddress = address
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
@@ -45,6 +47,11 @@ export function WalletHeader({
     { minimumFractionDigits: 2, maximumFractionDigits: 2 },
   );
   const explorerUrl = address ? `https://bscscan.com/address/${address}` : "";
+
+  const handleWalletSelect = (walletId: string) => {
+    console.log("[v0] Selected wallet:", walletId);
+    onConnect();
+  };
 
   const copyAddress = async () => {
     if (!address) return;
@@ -140,14 +147,21 @@ export function WalletHeader({
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Button
-            onClick={onConnect}
-            size="sm"
-            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-          >
-            <Wallet className="w-4 h-4" />
-            Connect
-          </Button>
+          <>
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              size="sm"
+              className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+            >
+              <Wallet className="w-4 h-4" />
+              Connect
+            </Button>
+            <WalletConnectModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onSelectWallet={handleWalletSelect}
+            />
+          </>
         )}
       </div>
     </header>
