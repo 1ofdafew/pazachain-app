@@ -56,7 +56,11 @@ export default function RootLayout({
     <html lang="en" className="bg-background">
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        <div>{children}</div>
+        <ThirdwebProvider>
+          <WalletProvider>
+            <AccountBalancesProvider>{children}</AccountBalancesProvider>
+          </WalletProvider>
+        </ThirdwebProvider>
         <Toaster position="top-center" />
       </body>
     </html>
