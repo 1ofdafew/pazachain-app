@@ -99,6 +99,8 @@ export function SwapCard({
   const numericBalance = Number.parseFloat(pusdBalance.replace(/,/g, ""));
   const [payAmount, setPayAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("");
+  const [selectedPayToken, setSelectedPayToken] = useState<TokenType>("PUSD");
+  const [isPayTokenMenuOpen, setIsPayTokenMenuOpen] = useState(false);
   const [buyTxResult, setBuyTxResult] = useState<{
     message: string;
     txHash: string;
@@ -157,18 +159,47 @@ export function SwapCard({
                     placeholder="0.00"
                     value={payAmount}
                     onChange={(e) => handlePayAmountChange(e.target.value)}
-                    className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0"
+                    className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 shrink-0">
-                    <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-primary-foreground">
-                        $
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsPayTokenMenuOpen(!isPayTokenMenuOpen)}
+                      className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 shrink-0 hover:bg-muted/80 transition-colors"
+                    >
+                      <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-primary-foreground">
+                          {selectedPayToken === "PUSD" ? "$" : selectedPayToken === "USDT" ? "T" : "C"}
+                        </span>
+                      </div>
+                      <span className="text-sm font-medium text-foreground">
+                        {selectedPayToken}
                       </span>
-                    </div>
-                    <span className="text-sm font-medium text-foreground">
-                      PUSD
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isPayTokenMenuOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    {isPayTokenMenuOpen && (
+                      <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-32">
+                        {(["PUSD", "USDT", "USDC"] as const).map((token) => (
+                          <button
+                            key={token}
+                            onClick={() => {
+                              setSelectedPayToken(token);
+                              setIsPayTokenMenuOpen(false);
+                            }}
+                            className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedPayToken === token ? "bg-secondary" : ""}`}
+                          >
+                            <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                              <span className="text-[10px] font-bold text-primary-foreground">
+                                {token === "PUSD" ? "$" : token === "USDT" ? "T" : "C"}
+                              </span>
+                            </div>
+                            <span className="text-sm font-medium text-foreground">
+                              {token}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -191,7 +222,7 @@ export function SwapCard({
                     placeholder="0.00"
                     value={receiveAmount}
                     readOnly
-                    className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0"
+                    className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <div className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0">
                     <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
@@ -238,7 +269,7 @@ export function SwapCard({
                           }
                           const txHash = generateTxHash();
                           setBuyTxResult({
-                            message: `Buying ${receiveAmount} PAZA for ${payAmount} PUSD`,
+                            message: `Buying ${receiveAmount} PAZA for ${payAmount} ${selectedPayToken}`,
                             txHash,
                           });
                         }
@@ -274,7 +305,7 @@ export function SwapCard({
   );
 }
 
-type TokenType = "PAZA" | "PUSD";
+type TokenType = "PAZA" | "PUSD" | "USDT" | "USDC";
 
 function SendTab({
   isConnected,
@@ -410,7 +441,7 @@ function SendTab({
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0"
+                className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <div className="relative">
                 <button
