@@ -147,23 +147,22 @@ export function WalletHeader({
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <>
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              size="sm"
-              className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-            >
-              <Wallet className="w-4 h-4" />
-              Connect
-            </Button>
-            <WalletConnectModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onSelectWallet={handleWalletSelect}
-            />
-          </>
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            size="sm"
+            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+          >
+            <Wallet className="w-4 h-4" />
+            Connect
+          </Button>
         )}
       </div>
+
+      <WalletConnectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelectWallet={handleWalletSelect}
+      />
     </header>
   );
 }
