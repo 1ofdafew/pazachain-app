@@ -1,40 +1,97 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  ArrowDown,
-  ChevronDown,
-  Scan,
-  X,
-  Copy,
-  Check,
-  ExternalLink,
-} from "lucide-react";
-import dynamic from "next/dynamic";
-import { Html5Qrcode } from "html5-qrcode";
-import { toast } from "sonner";
 import { WalletConnectModal } from "./wallet-connect-modal";
+import { BuyTab } from "./swap/buy-tab";
+import { SendTab } from "./swap/send-tab";
+import { ReceiveTab } from "./swap/receive-tab";
+import type { TokenBalances } from "./swap/types";
 
-const QRCode = dynamic(
-  () => import("react-qrcode-logo").then((mod) => mod.QRCode),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-40 h-40 bg-muted animate-pulse rounded-lg" />
-    ),
-  },
-);
+interface SwapCardProps {
+  activeTab: "buy" | "send" | "receive";
+  onTabChange: (tab: "buy" | "send" | "receive") => void;
+  isConnected: boolean;
+  onConnect: () => void;
+  pusdBalance?: string;
+}
 
-// Generate mock transaction hash
-function generateTxHash() {
-  const chars = "0123456789abcdef";
-  let hash = "0x";
-  for (let i = 0; i < 64; i++) {
-    hash += chars[Math.floor(Math.random() * chars.length)];
-  }
+export function SwapCard({
+  activeTab,
+  onTabChange,
+  isConnected,
+  onConnect,
+  pusdBalance = "0.00",
+}: SwapCardProps) {
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+
+  const tokenBalances: TokenBalances = {
+    PUSD: pusdBalance,
+    USDT: "1,250.00",
+    USDC: "850.50",
+    PAZA: "1,000.00",
+  };
+
+  const handleWalletSelect = (walletId: string) => {
+    onConnect();
+  };
+
+  const handleConnect = () => setIsWalletModalOpen(true);
+
+  return (
+    <>
+      <Card className="bg-card border-border overflow-hidden">
+        {/* Tab Navigation */}
+        <div className="flex border-b border-border">
+          {(["buy", "send", "receive"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => onTabChange(tab)}
+              className={`flex-1 py-3 text-sm font-medium capitalize transition-colors ${
+                activeTab === tab
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-4 space-y-4">
+          {activeTab === "buy" && (
+            <BuyTab
+              isConnected={isConnected}
+              onConnect={handleConnect}
+              tokenBalances={tokenBalances}
+              pusdBalance={pusdBalance}
+            />
+          )}
+
+          {activeTab === "send" && (
+            <SendTab
+              isConnected={isConnected}
+              onConnect={handleConnect}
+            />
+          )}
+
+          {activeTab === "receive" && (
+            <ReceiveTab
+              isConnected={isConnected}
+              onConnect={handleConnect}
+            />
+          )}
+        </div>
+      </Card>
+
+      <WalletConnectModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onSelectWallet={handleWalletSelect}
+      />
+    </>
+  );
+}
   return hash;
 }
 
