@@ -18,7 +18,7 @@ export function TransactionResult({
 }: TransactionResultProps) {
   const explorerUrl =
     chain === base
-      ? `https://basescan.org/address/tx/${txHash}`
+      ? `https://basescan.org/tx/${txHash}`
       : `https://sepolia.basescan.org/tx/${txHash}`;
   const shortHash = `${txHash.slice(0, 10)}...${txHash.slice(-8)}`;
 
