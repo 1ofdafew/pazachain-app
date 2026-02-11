@@ -51,7 +51,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+      >
         <ThirdwebProvider>
           <WalletProvider>
             <AccountBalancesProvider>{children}</AccountBalancesProvider>
