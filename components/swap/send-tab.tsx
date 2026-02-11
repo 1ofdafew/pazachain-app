@@ -61,8 +61,14 @@ export function SendTab({
     usdcBalance,
     pusdBalance,
     pazaAvailable,
+    pazaBalance,
+    pazaFrozen,
     refresh: refreshBalances,
   } = useAccountBalances();
+
+  // console.log(
+  //   `PAZA: available - ${pazaAvailable}, balance - ${pazaBalance}, frozen: ${pazaFrozen}`
+  // );
 
   useEffect(() => {
     refreshBalances();
@@ -72,14 +78,14 @@ export function SendTab({
     { type: "PUSD", balance: pusdBalance },
     { type: "USDT", balance: usdtBalance },
     { type: "USDC", balance: usdcBalance },
-    { type: "PAZA", balance: pazaAvailable },
+    { type: "PAZA", balance: `${Number(pazaBalance) - Number(pazaFrozen)}` },
   ];
 
   const tokenBalances = {
     ["PUSD"]: pusdBalance,
     ["USDT"]: usdtBalance,
     ["USDC"]: usdcBalance,
-    ["PAZA"]: pazaAvailable,
+    ["PAZA"]: `${Number(pazaBalance) - Number(pazaFrozen)}`,
   };
 
   const tokenContracts = {
@@ -276,7 +282,7 @@ export function SendTab({
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="border-0 bg-transparent text-xl font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="border-0 bg-transparent text-base font-semibold text-foreground p-0 h-auto focus-visible:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <div className="relative">
                 <button
