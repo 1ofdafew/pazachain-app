@@ -56,7 +56,7 @@ export function WalletHeader() {
   );
   const explorerUrl =
     chain === base
-      ? `https://basescan.org/address/address/${address}`
+      ? `https://basescan.org/address/${address}`
       : `https://sepolia.basescan.org/address/${address}`;
 
   const copyAddress = async () => {
