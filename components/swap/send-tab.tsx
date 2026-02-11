@@ -60,7 +60,6 @@ export function SendTab({
     usdtBalance,
     usdcBalance,
     pusdBalance,
-    pazaAvailable,
     pazaBalance,
     pazaFrozen,
     refresh: refreshBalances,
