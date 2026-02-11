@@ -234,9 +234,7 @@ export function SendTab({ isConnected, onConnect }: SendTabProps) {
                   : onConnect
               }
             >
-              {isConnected
-                ? `Send ${selectedToken}`
-                : "Connect Wallet to Send"}
+              {isConnected ? `Send ${selectedToken}` : "Connect Wallet to Send"}
             </Button>
           ) : (
             <TransactionResult

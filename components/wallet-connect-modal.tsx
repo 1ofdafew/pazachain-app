@@ -113,6 +113,6 @@ export function WalletConnectModal({
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

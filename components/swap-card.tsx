@@ -51,7 +51,8 @@ export function SwapCard({
                 activeTab === tab
                   ? "text-primary border-b-2 border-primary bg-primary/5"
                   : "text-muted-foreground hover:text-foreground"
-              }`}>
+              }`}
+            >
               {tab}
             </button>
           ))}
