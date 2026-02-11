@@ -11,9 +11,6 @@ import type { TokenBalances } from "./swap/types";
 interface SwapCardProps {
   activeTab: "buy" | "send" | "receive";
   onTabChange: (tab: "buy" | "send" | "receive") => void;
-  isConnected: boolean;
-  onConnect: () => void;
-  pusdBalance?: string;
 }
 
 export function SwapCard({
@@ -51,8 +48,7 @@ export function SwapCard({
                 activeTab === tab
                   ? "text-primary border-b-2 border-primary bg-primary/5"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
+              }`}>
               {tab}
             </button>
           ))}

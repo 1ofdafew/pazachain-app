@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Wallet,
+  Wallet as WalletIcon,
   Copy,
   ExternalLink,
   LogOut,
@@ -22,20 +22,23 @@ import {
 import { WalletConnectModal } from "./wallet-connect-modal";
 
 interface WalletHeaderProps {
+  isConnecting: boolean;
   isConnected: boolean;
-  onConnect: () => void;
+  onConnect: (type: WalletType) => Promise<Wallet | null | undefined>;
   onDisconnect: () => void;
   address?: string;
   pusdBalance?: string;
 }
 
-export function WalletHeader({
-  isConnected,
-  onConnect,
-  onDisconnect,
-  address,
-  pusdBalance = "0.00",
-}: WalletHeaderProps) {
+export function WalletHeader() {
+  // {
+  // isConnecting,
+  // isConnected,
+  // onConnect,
+  // onDisconnect,
+  // address = "",
+  // pusdBalance = "0.00",
+  // }: WalletHeaderProps
   const [copied, setCopied] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -44,9 +47,9 @@ export function WalletHeader({
     : "";
   const formattedBalance = Number.parseFloat(pusdBalance).toLocaleString(
     undefined,
-    { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
   );
-  const explorerUrl = address ? `https://bscscan.com/address/${address}` : "";
+  const explorerUrl = address ? `https://basescan.org/address/${address}` : "";
 
   const handleWalletSelect = (walletId: string) => {
     console.log("[v0] Selected wallet:", walletId);
@@ -86,10 +89,10 @@ export function WalletHeader({
             <DropdownMenuTrigger asChild>
               <Button
                 size="sm"
-                className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-              >
-                <Wallet className="w-4 h-4" />
-                {displayAddress}
+                className="h-9 gap-2 bg-card text-primary-foreground hover:bg-primary/90 font-medium border">
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+                <WalletIcon className="w-4 h-4" />
+                <div className="hidden md:block">{displayAddress}</div>
                 <ChevronDown className="w-3 h-3 opacity-70" />
               </Button>
             </DropdownMenuTrigger>
@@ -137,10 +140,9 @@ export function WalletHeader({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={onDisconnect}
+                onClick={disconnectWallet}
                 variant="destructive"
-                className="gap-3 py-2.5"
-              >
+                className="gap-3 py-2.5">
                 <LogOut className="w-4 h-4" />
                 <span>Disconnect</span>
               </DropdownMenuItem>
@@ -150,8 +152,7 @@ export function WalletHeader({
           <Button
             onClick={() => setIsModalOpen(true)}
             size="sm"
-            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-          >
+            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
             <Wallet className="w-4 h-4" />
             Connect
           </Button>
