@@ -15,7 +15,7 @@ export const client = createThirdwebClient({
 // Use `baseSepolia` for Sepolia Testnet
 // Use `base` for Mainnet
 //
-export const chain = baseSepolia;
+export const chain = base;
 
 // Contract addresses
 export const PAZA_TOKEN_ADDRESS =
