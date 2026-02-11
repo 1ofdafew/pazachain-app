@@ -15,17 +15,20 @@ export const client = createThirdwebClient({
 // Use `baseSepolia` for Sepolia Testnet
 // Use `base` for Mainnet
 //
-export const chain = base;
+export const chain = baseSepolia;
 
 // Contract addresses
 export const PAZA_TOKEN_ADDRESS =
   process.env.NEXT_PUBLIC_PAZA_TOKEN_ADDRESS || "0x...";
 export const PUSD_TOKEN_ADDRESS =
   process.env.NEXT_PUBLIC_PUSD_TOKEN_ADDRESS || "0x...";
-export const SALE_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_SALE_CONTRACT_ADDRESS || "0x...";
-export const VESTING_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_VESTING_CONTRACT_ADDRESS || "0x...";
+export const OPEN_SALE_CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_OPEN_SALE_CONTRACT_ADDRESS || "0x...";
+
+export const USDT_CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_USDT_ADDRESS || "0x...";
+export const USDC_CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_USDC_ADDRESS || "0x...";
 
 export const MANAGED_ACCOUNT_FACTORY_ADDRESS =
   process.env.NEXT_PUBLIC_MANAGED_ACCOUNT_FACTORY_ADDRESS || "0x...";
@@ -47,19 +50,27 @@ export const PUSDTokenContract = getContract({
   address: PUSD_TOKEN_ADDRESS,
 });
 
-export const PAZASaleContract = getContract({
+export const PAZAOpenSaleContract = getContract({
   client,
   chain,
-  address: SALE_CONTRACT_ADDRESS,
+  address: OPEN_SALE_CONTRACT_ADDRESS,
 });
 
-export const PAZAVestingContract = getContract({
+export const USDTTokenContract = getContract({
   client,
   chain,
-  address: VESTING_CONTRACT_ADDRESS,
+  address: USDT_CONTRACT_ADDRESS,
+});
+
+export const USDCTokenContract = getContract({
+  client,
+  chain,
+  address: USDC_CONTRACT_ADDRESS,
 });
 
 export const formatCurrency = (num: number, dec: number): string => {
+  if (!num && isNaN(Number(num))) return "";
+
   const formatted = num.toFixed(dec);
   const [integer, decimals] = formatted.split(".");
   return `${integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}.${decimals}`;

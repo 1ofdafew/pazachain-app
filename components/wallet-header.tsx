@@ -19,7 +19,12 @@ import {
   Check,
   ChevronDown,
 } from "lucide-react";
-import { WalletConnectModal } from "./wallet-connect-modal";
+import { useWallet, WalletType } from "@/contexts/wallet-context";
+import { Wallet } from "thirdweb/wallets";
+import { chain } from "@/lib/thirdweb";
+import { base } from "thirdweb/chains";
+import { useAccountBalances } from "@/contexts/acount-balances-context";
+import { WalletSelector } from "./wallet-selector";
 
 interface WalletHeaderProps {
   isConnecting: boolean;
@@ -31,14 +36,14 @@ interface WalletHeaderProps {
 }
 
 export function WalletHeader() {
-  // {
-  // isConnecting,
-  // isConnected,
-  // onConnect,
-  // onDisconnect,
-  // address = "",
-  // pusdBalance = "0.00",
-  // }: WalletHeaderProps
+  const {
+    address,
+    isConnecting,
+    isConnected,
+    connectWallet,
+    disconnectWallet,
+  } = useWallet();
+  const { pusdBalance } = useAccountBalances();
   const [copied, setCopied] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -49,12 +54,10 @@ export function WalletHeader() {
     undefined,
     { minimumFractionDigits: 2, maximumFractionDigits: 2 },
   );
-  const explorerUrl = address ? `https://basescan.org/address/${address}` : "";
-
-  const handleWalletSelect = (walletId: string) => {
-    console.log("[v0] Selected wallet:", walletId);
-    onConnect();
-  };
+  const explorerUrl =
+    chain === base
+      ? `https://basescan.org/address/address/${address}`
+      : `https://sepolia.basescan.org/address/${address}`;
 
   const copyAddress = async () => {
     if (!address) return;
@@ -151,22 +154,12 @@ export function WalletHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            size="sm"
-            className="h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-          >
-            <Wallet className="w-4 h-4" />
-            Connect
-          </Button>
+          <WalletSelector
+            onSelectWallet={connectWallet}
+            isConnecting={isConnecting}
+          />
         )}
       </div>
-
-      <WalletConnectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSelectWallet={handleWalletSelect}
-      />
     </header>
   );
 }

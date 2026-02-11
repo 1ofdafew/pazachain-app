@@ -6,38 +6,23 @@ import { WalletConnectModal } from "./wallet-connect-modal";
 import { BuyTab } from "./swap/buy-tab";
 import { SendTab } from "./swap/send-tab";
 import { ReceiveTab } from "./swap/receive-tab";
-import type { TokenBalances } from "./swap/types";
+import { useAccountBalances } from "@/contexts/acount-balances-context";
+import { useWallet } from "@/contexts/wallet-context";
+import { TokenOptionsType } from "./swap/types";
 
 interface SwapCardProps {
   activeTab: "buy" | "send" | "receive";
   onTabChange: (tab: "buy" | "send" | "receive") => void;
 }
 
-export function SwapCard({
-  activeTab,
-  onTabChange,
-  isConnected,
-  onConnect,
-  pusdBalance = "0.00",
-}: SwapCardProps) {
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
+  // const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
-  const tokenBalances: TokenBalances = {
-    PUSD: pusdBalance,
-    USDT: "1,250.00",
-    USDC: "850.50",
-    PAZA: "1,000.00",
-  };
-
-  const handleWalletSelect = (walletId: string) => {
-    onConnect();
-  };
-
-  const handleConnect = () => setIsWalletModalOpen(true);
+  const { address, isConnected, isConnecting, connectWallet } = useWallet();
 
   return (
     <>
-      <Card className="bg-card border-border overflow-hidden">
+      <Card className="bg-card border-border overflow-hidden min-h-[520px]">
         {/* Tab Navigation */}
         <div className="flex border-b border-border">
           {(["buy", "send", "receive"] as const).map((tab) => (
@@ -59,27 +44,29 @@ export function SwapCard({
           {activeTab === "buy" && (
             <BuyTab
               isConnected={isConnected}
-              onConnect={handleConnect}
-              tokenBalances={tokenBalances}
-              pusdBalance={pusdBalance}
+              isConnecting={isConnecting}
+              onConnect={connectWallet}
             />
           )}
 
           {activeTab === "send" && (
-            <SendTab isConnected={isConnected} onConnect={handleConnect} />
+            <SendTab
+              isConnected={isConnected}
+              isConnecting={isConnecting}
+              onConnect={connectWallet}
+            />
           )}
 
           {activeTab === "receive" && (
-            <ReceiveTab isConnected={isConnected} onConnect={handleConnect} />
+            <ReceiveTab
+              address={address}
+              isConnected={isConnected}
+              isConnecting={isConnecting}
+              onConnect={connectWallet}
+            />
           )}
         </div>
       </Card>
-
-      <WalletConnectModal
-        isOpen={isWalletModalOpen}
-        onClose={() => setIsWalletModalOpen(false)}
-        onSelectWallet={handleWalletSelect}
-      />
     </>
   );
 }

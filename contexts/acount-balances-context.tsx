@@ -2,17 +2,35 @@
 
 import { createContext, useCallback, useContext, useMemo } from "react";
 import { useReadContract } from "thirdweb/react";
-import { PAZATokenContract, PUSDTokenContract } from "@/lib/thirdweb";
+import {
+  PAZATokenContract,
+  PUSDTokenContract,
+  USDCTokenContract,
+  USDTTokenContract,
+} from "@/lib/thirdweb";
 import { useWallet } from "./wallet-context";
 import { formatUnits } from "ethers";
+import { ContractOptions } from "thirdweb";
 
 const AccountBalancesContext = createContext<{
+  usdtBalance: string;
+  usdcBalance: string;
+  pusdBalance: string;
   pazaBalance: string;
   pazaFrozen: string;
   pazaAvailable: string;
-  pusdBalance: string;
   refresh: () => Promise<void>;
 } | null>(null);
+
+type ContractType = Readonly<ContractOptions<[], `0x${string}`>>;
+
+const getBalance = (contract: ContractType, address: string) => {
+  return useReadContract({
+    contract: contract,
+    method: "function balanceOf(address) view returns (uint256)",
+    params: [address],
+  });
+};
 
 export function AccountBalancesProvider({
   children,
@@ -21,11 +39,10 @@ export function AccountBalancesProvider({
 }) {
   const { address } = useWallet();
 
-  const pazaRead = useReadContract({
-    contract: PAZATokenContract,
-    method: "function balanceOf(address) view returns (uint256)",
-    params: [address],
-  });
+  const usdtRead = getBalance(USDTTokenContract, address);
+  const usdcRead = getBalance(USDCTokenContract, address);
+  const pusdRead = getBalance(PUSDTokenContract, address);
+  const pazaRead = getBalance(PAZATokenContract, address);
 
   const frozenRead = useReadContract({
     contract: PAZATokenContract,
@@ -34,32 +51,37 @@ export function AccountBalancesProvider({
     params: [address],
   });
 
-  const pusdRead = useReadContract({
-    contract: PUSDTokenContract,
-    method: "function balanceOf(address) view returns (uint256)",
-    params: [address],
-  });
-
   const refresh = useCallback(async () => {
     await Promise.all([
+      usdtRead.refetch(),
+      usdcRead.refetch(),
+      pusdRead.refetch(),
       pazaRead.refetch(),
       frozenRead.refetch(),
-      pusdRead.refetch(),
     ]);
-  }, [pazaRead, frozenRead, pusdRead]);
+  }, [usdtRead, usdcRead, pusdRead, pazaRead, frozenRead]);
 
   const value = useMemo(
     () => ({
+      usdtBalance: usdtRead.data ? formatUnits(usdtRead.data, 6) : "0",
+      usdcBalance: usdcRead.data ? formatUnits(usdcRead.data, 6) : "0",
+      pusdBalance: pusdRead.data ? formatUnits(pusdRead.data, 6) : "0",
       pazaBalance: pazaRead.data ? formatUnits(pazaRead.data, 6) : "0",
       pazaFrozen: frozenRead.data ? formatUnits(frozenRead.data, 6) : "0",
       pazaAvailable:
         pazaRead.data && frozenRead.data
           ? formatUnits(pazaRead.data - frozenRead.data, 6)
           : "0",
-      pusdBalance: pusdRead.data ? formatUnits(pusdRead.data, 6) : "0",
       refresh,
     }),
-    [pazaRead.data, frozenRead.data, pusdRead.data, refresh],
+    [
+      usdtRead.data,
+      usdcRead.data,
+      pusdRead.data,
+      pazaRead.data,
+      frozenRead.data,
+      refresh,
+    ],
   );
 
   return (

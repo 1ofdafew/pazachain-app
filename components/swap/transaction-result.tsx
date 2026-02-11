@@ -2,6 +2,8 @@
 
 import { Check, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { chain } from "@/lib/thirdweb";
+import { base } from "thirdweb/chains";
 
 interface TransactionResultProps {
   message: string;
@@ -14,7 +16,10 @@ export function TransactionResult({
   txHash,
   onDismiss,
 }: TransactionResultProps) {
-  const explorerUrl = `https://bscscan.com/tx/${txHash}`;
+  const explorerUrl =
+    chain === base
+      ? `https://basescan.org/address/tx/${txHash}`
+      : `https://sepolia.basescan.org/tx/${txHash}`;
   const shortHash = `${txHash.slice(0, 10)}...${txHash.slice(-8)}`;
 
   return (
@@ -27,7 +32,7 @@ export function TransactionResult({
           Transaction Submitted
         </span>
       </div>
-      <p className="text-sm text-muted-foreground">{message}</p>
+      <p className="text-sm text-green-400">{message}</p>
       <a
         href={explorerUrl}
         target="_blank"

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import { WalletSelector } from "../wallet-selector";
+import { WalletType } from "@/contexts/wallet-context";
 
 const QRCode = dynamic(
   () => import("react-qrcode-logo").then((mod) => mod.QRCode),
@@ -16,15 +18,20 @@ const QRCode = dynamic(
 );
 
 interface ReceiveTabProps {
+  address: string;
   isConnected: boolean;
-  onConnect: () => void;
+  isConnecting: boolean;
+  onConnect: (provider: WalletType) => void;
 }
 
-export function ReceiveTab({ isConnected, onConnect }: ReceiveTabProps) {
+export function ReceiveTab({
+  address,
+  isConnected,
+  isConnecting,
+  onConnect,
+}: ReceiveTabProps) {
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const fullAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f8dE8A";
-  const displayAddress = `${fullAddress.slice(0, 6)}...${fullAddress.slice(-4)}`;
 
   useEffect(() => {
     setMounted(true);
@@ -32,13 +39,13 @@ export function ReceiveTab({ isConnected, onConnect }: ReceiveTabProps) {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(fullAddress);
+      await navigator.clipboard.writeText(address);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
-      textArea.value = fullAddress;
+      textArea.value = address;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand("copy");
@@ -54,11 +61,11 @@ export function ReceiveTab({ isConnected, onConnect }: ReceiveTabProps) {
         <div className="bg-white rounded-xl p-3">
           {mounted ? (
             <QRCode
-              value={fullAddress}
+              value={address || "..."}
               size={160}
               bgColor="#FFFFFF"
               fgColor="#1e293b"
-              qrStyle="squares"
+              qrStyle="dots"
               logoImage="/paza-logo.png"
               logoWidth={36}
               logoHeight={36}
@@ -77,12 +84,14 @@ export function ReceiveTab({ isConnected, onConnect }: ReceiveTabProps) {
           )}
         </div>
         <div className="text-center space-y-2 w-full">
-          <p className="text-sm text-muted-foreground">Your PAZA Address</p>
+          <p className="text-sm text-muted-foreground">Your Wallet Address</p>
           <button
             onClick={copyToClipboard}
             className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]"
           >
-            <code className="text-sm text-foreground">{displayAddress}</code>
+            <code className="text-sm text-foreground break-all px-0">
+              {address || "..."}
+            </code>
             {copied ? (
               <Check className="w-4 h-4 text-primary" />
             ) : (
@@ -92,14 +101,11 @@ export function ReceiveTab({ isConnected, onConnect }: ReceiveTabProps) {
           {copied && <p className="text-xs text-primary">Address copied!</p>}
         </div>
         {!isConnected && (
-          <div className="w-full pt-2">
-            <Button
-              className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={onConnect}
-            >
-              Connect Wallet
-            </Button>
-          </div>
+          <WalletSelector
+            onSelectWallet={onConnect}
+            isConnecting={isConnecting}
+            buttonClassName="w-full"
+          />
         )}
       </div>
     </div>
