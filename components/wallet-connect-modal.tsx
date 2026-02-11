@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
+import { Info, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PazaLogo } from "./paza-logo";
 
 interface WalletOption {
   id: string;
@@ -12,10 +13,12 @@ interface WalletOption {
   color: string;
 }
 
-const walletOptions: WalletOption[] = [
+const walletSocials: WalletOption[] = [
   { id: "google", name: "Google", icon: "G", color: "bg-red-500" },
   { id: "apple", name: "Apple", icon: "A", color: "bg-gray-900" },
   { id: "passkey", name: "Passkey", icon: "P", color: "bg-blue-600" },
+];
+const walletExternal: WalletOption[] = [
   { id: "metamask", name: "MetaMask", icon: "M", color: "bg-orange-500" },
   { id: "base", name: "Base", icon: "B", color: "bg-blue-700" },
   { id: "binance", name: "Binance", icon: "B", color: "bg-yellow-500" },
@@ -56,12 +59,17 @@ export function WalletConnectModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
-            <h2 className="text-xl font-bold text-foreground">
-              Connect Wallet
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              Choose your preferred wallet
-            </p>
+            <div className="flex items-center gap-x-4">
+              <PazaLogo className="w-8 h-8 lg:w-10 lg:h-10" />
+              <div>
+                <h2 className="text-xl font-bold text-foreground">
+                  Connect Wallet
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Choose your preferred wallet
+                </p>
+              </div>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -73,8 +81,60 @@ export function WalletConnectModal({
 
         {/* Wallet Options */}
         <div className="p-4 max-h-[60vh] overflow-y-auto">
+          <div className="my-4">
+            <h2 className="text-lg font-bold text-foreground">
+              Sponsored Wallets
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Choose your preferred Social Login to enjoy{" "}
+              <span className="font-bold">Gas-Free</span> transactions;
+            </p>
+          </div>
           <div className="grid grid-cols-1 gap-2">
-            {walletOptions.map((wallet) => (
+            {walletSocials.map((wallet) => (
+              <button
+                key={wallet.id}
+                onClick={() => {
+                  onSelectWallet(wallet.id);
+                  onClose();
+                }}
+                className="flex items-center gap-4 p-4 rounded-xl border border-border hover:border-primary hover:bg-secondary/50 transition-all group"
+              >
+                <div
+                  className={`flex items-center justify-center w-12 h-12 rounded-xl ${wallet.color} text-white font-bold text-lg shrink-0`}
+                >
+                  {wallet.icon}
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                    {wallet.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Connect with {wallet.name}
+                  </p>
+                </div>
+                <div className="w-2 h-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-6 mb-2">
+            <h2 className="text-lg font-bold text-foreground">
+              External Own Wallets
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Choose your preferred{" "}
+              <span className="font-bold">Externally-Owned Wallets</span>
+            </p>
+            <div className="flex flex-items gap-x-2 py-2 text-amber-500">
+              <Info className="w-4 h-4" />
+              <p className="text-xs">
+                All transaction fees are to be paid by the wallet
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {walletExternal.map((wallet) => (
               <button
                 key={wallet.id}
                 onClick={() => {
