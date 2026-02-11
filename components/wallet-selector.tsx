@@ -149,11 +149,13 @@ export function WalletSelector({
         <Button
           size={"sm"}
           disabled={isConnecting}
-          className={`gap-2 h-11 px-4 ${buttonClassName}`}>
+          className={`gap-2 h-11 px-4 ${buttonClassName}`}
+        >
           <WalletIcon className="w-4 h-4" />
           {buttonLabel && (
             <span
-              className={`ml-2 ${hideLabel ? "hidden sm:inline" : "inline"}`}>
+              className={`ml-2 ${hideLabel ? "hidden sm:inline" : "inline"}`}
+            >
               {isConnecting ? "Connecting..." : buttonLabel}
             </span>
           )}
@@ -181,9 +183,11 @@ export function WalletSelector({
                   key={wallet.id}
                   onClick={() => handleSelect(wallet.id)}
                   disabled={isConnecting}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-accent/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-accent/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <div
-                    className={`w-10 h-10 rounded-lg ${wallet.bgColor} flex items-center justify-center shrink-0`}>
+                    className={`w-10 h-10 rounded-lg ${wallet.bgColor} flex items-center justify-center shrink-0`}
+                  >
                     {wallet.icon && (
                       <wallet.icon className={`w-5 h-5 ${wallet.iconColor}`} />
                     )}
@@ -212,9 +216,11 @@ export function WalletSelector({
                   key={wallet.id}
                   onClick={() => handleSelect(wallet.id)}
                   disabled={isConnecting}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border hover:bg-accent/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border hover:bg-accent/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <div
-                    className={`w-12 h-12 rounded-lg ${wallet.bgColor} flex items-center justify-center shrink-0`}>
+                    className={`w-12 h-12 rounded-lg ${wallet.bgColor} flex items-center justify-center shrink-0`}
+                  >
                     {wallet.customIcon ? (
                       wallet.customIcon
                     ) : wallet.icon ? (

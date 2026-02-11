@@ -29,7 +29,7 @@ const QRCode = dynamic(
     loading: () => (
       <div className="w-40 h-40 bg-muted animate-pulse rounded-lg" />
     ),
-  }
+  },
 );
 
 // Generate mock transaction hash
@@ -69,14 +69,16 @@ function TransactionResult({
         href={explorerUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 text-sm text-primary hover:underline">
+        className="flex items-center gap-2 text-sm text-primary hover:underline"
+      >
         <span>View on Explorer: {shortHash}</span>
         <ExternalLink className="w-3.5 h-3.5" />
       </a>
       <Button
         variant="outline"
         className="w-full h-10 mt-2 border-primary/30 text-primary hover:bg-primary/10 bg-transparent"
-        onClick={onDismiss}>
+        onClick={onDismiss}
+      >
         Done
       </Button>
     </div>
@@ -121,7 +123,7 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
           amt.toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-          })
+          }),
         );
       } else {
         setReceiveAmount("");
@@ -164,7 +166,8 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
               activeTab === tab
                 ? "text-primary border-b-2 border-primary bg-primary/5"
                 : "text-muted-foreground hover:text-foreground"
-            }`}>
+            }`}
+          >
             {tab}
           </button>
         ))}
@@ -182,7 +185,8 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
                   <span className="text-sm text-muted-foreground">You Pay</span>
                   <button
                     className="text-xs text-primary font-medium"
-                    onClick={() => handlePayAmountChange(pusdBalance)}>
+                    onClick={() => handlePayAmountChange(pusdBalance)}
+                  >
                     MAX
                   </button>
                 </div>
@@ -254,11 +258,13 @@ export function SwapCard({ activeTab, onTabChange }: SwapCardProps) {
                   onSelectWallet={connectWallet}
                   isConnecting={isConnecting}
                   buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-                  buttonLabel="Connect Wallet to Buy"></WalletSelector>
+                  buttonLabel="Connect Wallet to Buy"
+                ></WalletSelector>
               ) : !buyTxResult ? (
                 <Button
                   className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
-                  onClick={handleBuy}>
+                  onClick={handleBuy}
+                >
                   {isConnected ? "Buy PAZA" : "Connect Wallet to Buy"}
                 </Button>
               ) : (
@@ -366,7 +372,7 @@ function SendTab({
         },
         () => {
           // QR code not found - ignore silently
-        }
+        },
       );
     } catch (err) {
       setScanError("Camera access denied or not available");
@@ -403,14 +409,16 @@ function SendTab({
             <span className="text-sm text-muted-foreground">Scan QR Code</span>
             <button
               onClick={stopScanner}
-              className="flex items-center gap-1 text-xs text-destructive font-medium">
+              className="flex items-center gap-1 text-xs text-destructive font-medium"
+            >
               <X className="w-4 h-4" />
               Cancel
             </button>
           </div>
           <div
             ref={scannerContainerRef}
-            className="relative rounded-xl overflow-hidden bg-black">
+            className="relative rounded-xl overflow-hidden bg-black"
+          >
             <div id="qr-reader" className="w-full" />
           </div>
           {scanError && (
@@ -471,7 +479,8 @@ function SendTab({
               </span>
               <button
                 onClick={startScanner}
-                className="flex items-center gap-1 text-xs text-primary font-medium">
+                className="flex items-center gap-1 text-xs text-primary font-medium"
+              >
                 <Scan className="w-4 h-4" />
                 Scan QR
               </button>
@@ -499,7 +508,8 @@ function SendTab({
               <div className="relative">
                 <button
                   onClick={() => setIsTokenMenuOpen(!isTokenMenuOpen)}
-                  className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0 hover:bg-primary/30 transition-colors">
+                  className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0 hover:bg-primary/30 transition-colors"
+                >
                   {selectedToken === "PAZA" ? (
                     <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-[10px] font-bold text-primary-foreground">
@@ -528,7 +538,8 @@ function SendTab({
                         setSelectedToken("PAZA");
                         setIsTokenMenuOpen(false);
                       }}
-                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PAZA" ? "bg-secondary" : ""}`}>
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PAZA" ? "bg-secondary" : ""}`}
+                    >
                       <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-[10px] font-bold text-primary-foreground">
                           P
@@ -543,7 +554,8 @@ function SendTab({
                         setSelectedToken("PUSD");
                         setIsTokenMenuOpen(false);
                       }}
-                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PUSD" ? "bg-secondary" : ""}`}>
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 hover:bg-secondary transition-colors ${selectedToken === "PUSD" ? "bg-secondary" : ""}`}
+                    >
                       <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-[10px] font-bold text-primary-foreground">
                           $
@@ -563,11 +575,13 @@ function SendTab({
               onSelectWallet={onConnect}
               isConnecting={isConnecting}
               buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              buttonLabel="Connect Wallet to Send"></WalletSelector>
+              buttonLabel="Connect Wallet to Send"
+            ></WalletSelector>
           ) : !sendTxResult ? (
             <Button
               className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={handleSend}>
+              onClick={handleSend}
+            >
               {isConnected ? `Send ${selectedToken}` : "Connect Wallet to Send"}
             </Button>
           ) : (
@@ -658,7 +672,8 @@ function ReceiveTab({
           <p className="text-sm text-muted-foreground">Your PAZA Address</p>
           <button
             onClick={copyToClipboard}
-            className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]">
+            className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]"
+          >
             <code className="text-sm text-foreground">{displayAddress}</code>
             {copied ? (
               <Check className="w-4 h-4 text-primary" />
@@ -674,7 +689,8 @@ function ReceiveTab({
               onSelectWallet={onConnect}
               isConnecting={isConnecting}
               buttonClassName="w-full h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              buttonLabel="Connect Wallet to Receive"></WalletSelector>
+              buttonLabel="Connect Wallet to Receive"
+            ></WalletSelector>
           </div>
         )}
       </div>

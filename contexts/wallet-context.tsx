@@ -88,7 +88,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         return wallet;
       });
     },
-    [account, isConnecting, connect]
+    [account, isConnecting, connect],
   );
 
   const disconnectWallet = () => {
@@ -103,7 +103,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         disconnectWallet,
         isConnecting,
         isConnected: !!account,
-      }}>
+      }}
+    >
       {children}
     </WalletContext.Provider>
   );

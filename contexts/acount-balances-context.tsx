@@ -59,7 +59,7 @@ export function AccountBalancesProvider({
       pusdBalance: pusdRead.data ? formatUnits(pusdRead.data, 6) : "0",
       refresh,
     }),
-    [pazaRead.data, frozenRead.data, pusdRead.data, refresh]
+    [pazaRead.data, frozenRead.data, pusdRead.data, refresh],
   );
 
   return (
