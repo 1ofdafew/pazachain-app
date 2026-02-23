@@ -22,6 +22,7 @@ import { useSendTransaction } from "thirdweb/react";
 import { shortenAddress, shortenHex } from "thirdweb/utils";
 import { parseUnits } from "ethers";
 import { prepareContractCall } from "thirdweb";
+import { ConnectWallet } from "../connect-wallet";
 
 interface SendTabProps {
   isConnected: boolean;
@@ -121,7 +122,7 @@ export function SendTab({
         },
         () => {
           // QR code not found - ignore silently
-        },
+        }
       );
     } catch {
       setScanError("Camera access denied or not available");
@@ -178,14 +179,14 @@ export function SendTab({
       //
       const amountToSend = parseUnits(amount, 6);
       setTxMessage(
-        `Sending ${val.toLocaleString()} ${selectedToken} to ${shortenHex(recipient, 4)}...`,
+        `Sending ${val.toLocaleString()} ${selectedToken} to ${shortenHex(recipient, 4)}...`
       );
       const txSend = await sendTransaction(
         prepareContractCall({
           contract: tokenContracts[selectedToken],
           method: "function transfer(address to, uint256 value) returns (bool)",
           params: [recipient, amountToSend],
-        }),
+        })
       );
       // setTxHash("0x33f1ede39a8821cbfa6f716f2ab42b5ecc43b1b5683e0799e2ea3d8340a21365"); //txSend.transactionHash);
       // setTxHash(txSend.transactionHash);
@@ -221,16 +222,14 @@ export function SendTab({
             <span className="text-sm text-muted-foreground">Scan QR Code</span>
             <button
               onClick={stopScanner}
-              className="flex items-center gap-1 text-xs text-destructive font-medium"
-            >
+              className="flex items-center gap-1 text-xs text-destructive font-medium">
               <X className="w-4 h-4" />
               Cancel
             </button>
           </div>
           <div
             ref={scannerContainerRef}
-            className="relative rounded-xl overflow-hidden bg-black"
-          >
+            className="relative rounded-xl overflow-hidden bg-black">
             <div id="qr-reader" className="w-full" />
           </div>
           {scanError && (
@@ -246,8 +245,7 @@ export function SendTab({
               </span>
               <button
                 onClick={startScanner}
-                className="flex items-center gap-1 text-xs text-primary font-medium"
-              >
+                className="flex items-center gap-1 text-xs text-primary font-medium">
                 <Scan className="w-4 h-4" />
                 Scan QR
               </button>
@@ -269,8 +267,7 @@ export function SendTab({
                 </span>
                 <button
                   className="text-xs text-primary font-medium"
-                  onClick={handleMaxAmount}
-                >
+                  onClick={handleMaxAmount}>
                   MAX
                 </button>
               </div>
@@ -286,8 +283,7 @@ export function SendTab({
               <div className="relative">
                 <button
                   onClick={() => setIsTokenMenuOpen(!isTokenMenuOpen)}
-                  className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0 hover:bg-primary/30 transition-colors"
-                >
+                  className="flex items-center gap-2 bg-primary/20 rounded-lg px-3 py-2 shrink-0 hover:bg-primary/30 transition-colors">
                   <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                     <span className="text-[10px] font-bold text-primary-foreground">
                       {selectedToken === "PAZA"
@@ -318,8 +314,7 @@ export function SendTab({
                         }}
                         className={`flex items-center justify-between w-full gap-x-4 px-3 py-2.5 hover:bg-secondary transition-colors ${
                           selectedToken === "PAZA" ? "bg-secondary" : ""
-                        }`}
-                      >
+                        }`}>
                         <div className="flex items-center gap-2">
                           <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                             <span className="text-[10px] font-bold text-primary-foreground">
@@ -354,8 +349,7 @@ export function SendTab({
                 transactionStatus === "success"
                   ? "bg-green-500/10 text-green-500 border border-green-500/20"
                   : "bg-destructive/10 text-shadow-amber-400 border border-destructive/20"
-              }`}
-            >
+              }`}>
               {transactionStatus === "success" ? (
                 <CheckCircle2 className="w-4 h-4" />
               ) : (
@@ -400,10 +394,11 @@ export function SendTab({
                 `Send ${selectedToken}`
               ) : (
                 <>
-                  <WalletSelector
+                  <ConnectWallet />
+                  {/* <WalletSelector
                     onSelectWallet={onConnect}
                     isConnecting={isConnecting}
-                  />
+                  /> */}
                 </>
               )}
             </Button>

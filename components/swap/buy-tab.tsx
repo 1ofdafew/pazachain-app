@@ -25,6 +25,7 @@ import { useSendTransaction } from "thirdweb/react";
 import { parseUnits } from "ethers";
 import { prepareContractCall } from "thirdweb";
 import { base } from "thirdweb/chains";
+import { ConnectWallet } from "../connect-wallet";
 
 interface BuyTabProps {
   isConnected: boolean;
@@ -62,7 +63,7 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
   // default balance to usdt balance
   const [currentBalance, setCurrentBalance] = useState<string>(usdtBalance);
   const [selectedStableCoin, setSelectedStableCoin] = useState<Stablecoin>(
-    Stablecoin.USDT,
+    Stablecoin.USDT
   );
 
   // purchasing
@@ -126,10 +127,10 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
           method:
             "function approve(address spender, uint256 amount) returns (bool)",
           params: [PAZAOpenSaleContract.address, approvalAmount],
-        }),
+        })
       );
       setTxMessage(
-        `${stableCoinName} spend approved. Proceeding to purchase...`,
+        `${stableCoinName} spend approved. Proceeding to purchase...`
       );
 
       // 2. Buy the tokens
@@ -138,7 +139,7 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
           contract: PAZAOpenSaleContract,
           method: "function buy(uint256 stablecoinAmount, uint8 stablecoin)",
           params: [approvalAmount, selectedStableCoin],
-        }),
+        })
       );
       // setNoticeMessage(
       //   `Successfully purchased PAZA tokens worth ${payAmount} ${stableCoinName}!`
@@ -189,8 +190,7 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
                 className="text-xs text-primary font-medium"
                 onClick={() =>
                   handlePayAmountChange(currentBalance.replace(/,/g, ""))
-                }
-              >
+                }>
                 MAX
               </button>
             </div>
@@ -206,8 +206,7 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
             <div className="relative">
               <button
                 onClick={() => setIsPayTokenMenuOpen(!isPayTokenMenuOpen)}
-                className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 shrink-0 hover:bg-muted/80 transition-colors"
-              >
+                className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 shrink-0 hover:bg-muted/80 transition-colors">
                 <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                   <span className="text-[10px] font-bold text-primary-foreground">
                     {selectedStableCoin === Stablecoin.PUSD
@@ -239,8 +238,7 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
                         selectedStableCoin === Stablecoin.PUSD
                           ? "bg-secondary"
                           : ""
-                      }`}
-                    >
+                      }`}>
                       <div className="flex items-center gap-2">
                         <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                           <span className="text-[10px] font-bold text-primary-foreground">
@@ -308,8 +306,7 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
               transactionStatus === "success"
                 ? "bg-green-500/10 text-green-500 border border-green-500/20"
                 : "bg-destructive/10 text-shadow-amber-400 border border-destructive/20"
-            }`}
-          >
+            }`}>
             {transactionStatus === "success" ? (
               <CheckCircle2 className="w-4 h-4" />
             ) : (
@@ -332,15 +329,15 @@ export function BuyTab({ isConnected, isConnecting, onConnect }: BuyTabProps) {
               payAmount === "" ||
               parseFloat(payAmount) < 5
             }
-            onClick={handlePurchase}
-          >
+            onClick={handlePurchase}>
             {isConnected ? (
               "Buy PAZA"
             ) : (
-              <WalletSelector
-                onSelectWallet={onConnect}
-                isConnecting={isConnecting}
-              />
+              <ConnectWallet />
+              // <WalletSelector
+              //   onSelectWallet={onConnect}
+              //   isConnecting={isConnecting}
+              // />
             )}
           </Button>
         ) : (

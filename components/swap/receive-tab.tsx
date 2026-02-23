@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import { WalletSelector } from "../wallet-selector";
 import { WalletType } from "@/contexts/wallet-context";
+import { ConnectWallet } from "../connect-wallet";
 
 const QRCode = dynamic(
   () => import("react-qrcode-logo").then((mod) => mod.QRCode),
@@ -14,7 +15,7 @@ const QRCode = dynamic(
     loading: () => (
       <div className="w-40 h-40 bg-muted animate-pulse rounded-lg" />
     ),
-  },
+  }
 );
 
 interface ReceiveTabProps {
@@ -87,8 +88,7 @@ export function ReceiveTab({
           <p className="text-sm text-muted-foreground">Your Wallet Address</p>
           <button
             onClick={copyToClipboard}
-            className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]"
-          >
+            className="flex items-center justify-center gap-2 bg-secondary rounded-lg px-4 py-3 w-full transition-colors hover:bg-secondary/80 active:scale-[0.98]">
             <code className="text-sm text-foreground break-all px-0">
               {address || "..."}
             </code>
@@ -101,11 +101,9 @@ export function ReceiveTab({
           {copied && <p className="text-xs text-primary">Address copied!</p>}
         </div>
         {!isConnected && (
-          <WalletSelector
-            onSelectWallet={onConnect}
-            isConnecting={isConnecting}
-            buttonClassName="w-full"
-          />
+          <div className="mt-4 w-full h-12 flex items-center justify-center rounded-lg text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
+            <ConnectWallet />
+          </div>
         )}
       </div>
     </div>

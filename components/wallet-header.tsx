@@ -25,6 +25,7 @@ import { chain } from "@/lib/thirdweb";
 import { base } from "thirdweb/chains";
 import { useAccountBalances } from "@/contexts/acount-balances-context";
 import { WalletSelector } from "./wallet-selector";
+import { ConnectWallet } from "./connect-wallet";
 
 interface WalletHeaderProps {
   isConnecting: boolean;
@@ -52,7 +53,7 @@ export function WalletHeader() {
     : "";
   const formattedBalance = Number.parseFloat(pusdBalance).toLocaleString(
     undefined,
-    { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
   );
   const explorerUrl =
     chain === base
@@ -87,7 +88,9 @@ export function WalletHeader() {
           </span>
         </div>
 
-        {isConnected && address ? (
+        <ConnectWallet />
+
+        {/* {isConnected && address ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -158,7 +161,7 @@ export function WalletHeader() {
             onSelectWallet={connectWallet}
             isConnecting={isConnecting}
           />
-        )}
+        )} */}
       </div>
     </header>
   );

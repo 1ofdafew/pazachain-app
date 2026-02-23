@@ -7,6 +7,7 @@ import { StepsSection } from "@/components/steps-section";
 import { WalletBanner } from "@/components/wallet-banner";
 import { useWallet } from "@/contexts/wallet-context";
 import { useAccountBalances } from "@/contexts/acount-balances-context";
+import { ConnectWallet } from "@/components/connect-wallet";
 
 export default function PazaWallet() {
   // const [isConnected, setIsConnected] = useState(false);
@@ -65,15 +66,13 @@ export default function PazaWallet() {
           {/* Grid pattern */}
           <svg
             className="absolute inset-0 w-full h-full opacity-40"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+            xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern
                 id="grid"
                 width="50"
                 height="50"
-                patternUnits="userSpaceOnUse"
-              >
+                patternUnits="userSpaceOnUse">
                 <path
                   d="M 50 0 L 0 0 0 50"
                   fill="none"
@@ -90,8 +89,7 @@ export default function PazaWallet() {
           <svg
             className="absolute top-32 right-48 w-80 h-80 opacity-30 animate-float"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 100 100"
-          >
+            viewBox="0 0 100 100">
             <defs>
               <linearGradient id="hexGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
@@ -117,8 +115,7 @@ export default function PazaWallet() {
           <svg
             className="absolute bottom-48 left-32 w-64 h-64 opacity-25 animate-float-delayed"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 100 100"
-          >
+            viewBox="0 0 100 100">
             <defs>
               <linearGradient id="hexGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.25" />
@@ -138,8 +135,7 @@ export default function PazaWallet() {
           <svg
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-225 opacity-20 animate-circle-pulse"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 200 200"
-          >
+            viewBox="0 0 200 200">
             <circle
               cx="100"
               cy="100"
@@ -147,8 +143,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1"
-              opacity="0.3"
-            >
+              opacity="0.3">
               <animate
                 attributeName="r"
                 values="90;95;90"
@@ -169,8 +164,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1"
-              opacity="0.4"
-            >
+              opacity="0.4">
               <animate
                 attributeName="r"
                 values="70;74;70"
@@ -191,8 +185,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1.5"
-              opacity="0.5"
-            >
+              opacity="0.5">
               <animate
                 attributeName="r"
                 values="50;53;50"
@@ -213,8 +206,7 @@ export default function PazaWallet() {
               fill="none"
               stroke="#3B82F6"
               strokeWidth="1"
-              opacity="0.3"
-            >
+              opacity="0.3">
               <animate
                 attributeName="r"
                 values="30;33;30"
