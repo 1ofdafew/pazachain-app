@@ -15,7 +15,8 @@ export const client = createThirdwebClient({
 // Use `baseSepolia` for Sepolia Testnet
 // Use `base` for Mainnet
 //
-export const chain = base;
+export const chain =
+  process.env.NEXT_PUBLIC_CHAIN === "baseSepolia" ? baseSepolia : base;
 
 // Contract addresses
 export const PAZA_TOKEN_ADDRESS =
@@ -79,7 +80,7 @@ export const formatCurrency = (num: number, dec: number): string => {
 export function formatTokenAmount(
   value: bigint,
   decimals: number,
-  displayDecimals: number = 2,
+  displayDecimals: number = 2
 ): string {
   if (value === 0n) return `0.${"0".repeat(displayDecimals)}`;
 
